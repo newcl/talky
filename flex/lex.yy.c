@@ -456,10 +456,12 @@ char *yytext;
 /* part 1 control information */
 #line 4 "talky.l"
 #include <iostream>
+#include "../bison/talky.tab.h"
 using namespace std;
 /* disable name mangling for g++ */
 #define YY_DECL extern "C" int yylex()
-#line 463 "lex.yy.c"
+int linenum = 0;
+#line 465 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -641,10 +643,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 10 "talky.l"
+#line 12 "talky.l"
 
-	/* <--- this tab is essential part 2 flex grammer */
-#line 648 "lex.yy.c"
+	//part 2 flex grammer */
+#line 650 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -730,35 +732,39 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 12 "talky.l"
+#line 14 "talky.l"
 ;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 13 "talky.l"
-{cout << "Found float point number:" << yytext << endl;}
+#line 15 "talky.l"
+{ yylval.fval = atof(yytext); return FLOAT;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 14 "talky.l"
-{cout << "Found integer:" << yytext << endl;}
+#line 16 "talky.l"
+{ yylval.ival = atoi(yytext); return INT;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 15 "talky.l"
-{cout << "Found string:" << yytext << endl;}
+#line 17 "talky.l"
+{
+						// yytext may change, make a hard copy
+						yylval.sval = strdup(yytext);
+						return STRING;
+					}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 16 "talky.l"
+#line 22 "talky.l"
 {cout << "unrecognized:" << yytext << endl;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 18 "talky.l"
+#line 23 "talky.l"
 ECHO;
 	YY_BREAK
-#line 762 "lex.yy.c"
+#line 768 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1755,14 +1761,12 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 18 "talky.l"
+#line 23 "talky.l"
 
 
 
 /* part 3 code */
-int main(int argc, char** argv){
-	yylex();
-}
+//moved to bison file ../bison/talky.y
 
 /*
 for more info about flex and bison, please refer to this article:

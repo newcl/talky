@@ -1,0 +1,1 @@
+bison -d talky.y

@@ -2,25 +2,28 @@
 
 %{
 #include <iostream>
+#include "../bison/talky.tab.h"
 using namespace std;
 /* disable name mangling for g++ */
 #define YY_DECL extern "C" int yylex()
+int linenum = 0;
 %}
 
 %%
-	/* <--- this tab is essential part 2 flex grammer */
+	//part 2 flex grammer */
 [\t\n ]*			;
-[0-9]*\.[0-9]+		{cout << "Found float point number:" << yytext << endl;}
-[0-9]+				{cout << "Found integer:" << yytext << endl;}
-[a-zA-Z0-9]+		{cout << "Found string:" << yytext << endl;}
+[0-9]*\.[0-9]+		{ yylval.fval = atof(yytext); return FLOAT;}
+[0-9]+				{ yylval.ival = atoi(yytext); return INT;}
+[a-zA-Z0-9]+		{
+						// yytext may change, make a hard copy
+						yylval.sval = strdup(yytext);
+						return STRING;
+					}
 .					{cout << "unrecognized:" << yytext << endl;}
-
 %%
 
 /* part 3 code */
-int main(int argc, char** argv){
-	yylex();
-}
+//moved to bison file ../bison/talky.y
 
 /*
 for more info about flex and bison, please refer to this article:
