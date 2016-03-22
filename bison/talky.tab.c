@@ -66,15 +66,47 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     INT = 258,
-     FLOAT = 259,
-     STRING = 260
+     TOKEN_IDENTIFIER = 258,
+     TOKEN_ENUM = 259,
+     TOKEN_STRUCT = 260,
+     TOKEN_INTERFACE = 261,
+     TOKEN_INT64 = 262,
+     TOKEN_UINT64 = 263,
+     TOKEN_DOUBLE = 264,
+     TOKEN_FLOAT = 265,
+     TOKEN_INT32 = 266,
+     TOKEN_UINT32 = 267,
+     TOKEN_INT16 = 268,
+     TOKEN_UINT16 = 269,
+     TOKEN_INT8 = 270,
+     TOKEN_UINT8 = 271,
+     TOKEN_BOOL = 272,
+     TOKEN_STRING = 273,
+     TOKEN_ARRAY = 274,
+     TOKEN_BYTES = 275,
+     TOKEN_UINTEGER_LITERAL = 276
    };
 #endif
 /* Tokens.  */
-#define INT 258
-#define FLOAT 259
-#define STRING 260
+#define TOKEN_IDENTIFIER 258
+#define TOKEN_ENUM 259
+#define TOKEN_STRUCT 260
+#define TOKEN_INTERFACE 261
+#define TOKEN_INT64 262
+#define TOKEN_UINT64 263
+#define TOKEN_DOUBLE 264
+#define TOKEN_FLOAT 265
+#define TOKEN_INT32 266
+#define TOKEN_UINT32 267
+#define TOKEN_INT16 268
+#define TOKEN_UINT16 269
+#define TOKEN_INT8 270
+#define TOKEN_UINT8 271
+#define TOKEN_BOOL 272
+#define TOKEN_STRING 273
+#define TOKEN_ARRAY 274
+#define TOKEN_BYTES 275
+#define TOKEN_UINTEGER_LITERAL 276
 
 
 
@@ -82,14 +114,18 @@
 /* Copy the first part of user declarations.  */
 #line 1 "talky.y"
 
+#define YYDEBUG 1
 #include <cstdio>
 #include <iostream>
+#include "../parser/inc/parser.h"
 using namespace std;
 // what bison needs to know from flex
 extern "C" int yylex();
 extern "C" int yyparse();
 extern "C" FILE* yyin;
 void yyerror(const char* s);
+
+#define YYSTYPE std::string
 
 
 
@@ -112,16 +148,7 @@ void yyerror(const char* s);
 #endif
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE
-#line 14 "talky.y"
-{
-	int ival;
-	float fval;
-	char* sval;
-}
-/* Line 193 of yacc.c.  */
-#line 124 "talky.tab.c"
-	YYSTYPE;
+typedef int YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1
@@ -133,7 +160,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 137 "talky.tab.c"
+#line 164 "talky.tab.c"
 
 #ifdef short
 # undef short
@@ -346,22 +373,22 @@ union yyalloc
 #endif
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  8
+#define YYFINAL  3
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   6
+#define YYLAST   70
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  6
+#define YYNTOKENS  30
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  2
+#define YYNNTS  22
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  7
+#define YYNRULES  44
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  9
+#define YYNSTATES  65
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   260
+#define YYMAXUTOK   276
 
 #define YYTRANSLATE(YYX)						\
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -373,15 +400,15 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+      26,    27,     2,     2,    24,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,    25,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,    28,     2,    29,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,    22,     2,    23,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -395,7 +422,8 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
+      15,    16,    17,    18,    19,    20,    21
 };
 
 #if YYDEBUG
@@ -403,20 +431,38 @@ static const yytype_uint8 yytranslate[] =
    YYRHS.  */
 static const yytype_uint8 yyprhs[] =
 {
-       0,     0,     3,     6,     9,    12,    14,    16
+       0,     0,     3,     5,     8,     9,    11,    13,    15,    16,
+      23,    26,    27,    30,    31,    38,    41,    42,    46,    47,
+      54,    57,    58,    64,    68,    70,    71,    74,    76,    78,
+      80,    82,    84,    86,    88,    90,    92,    94,    96,    98,
+     100,   102,   104,   106,   111
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
 {
-       7,     0,    -1,     3,     7,    -1,     4,     7,    -1,     5,
-       7,    -1,     3,    -1,     4,    -1,     5,    -1
+      31,     0,    -1,    32,    -1,    32,    33,    -1,    -1,    34,
+      -1,    38,    -1,    42,    -1,    -1,     4,     3,    35,    22,
+      36,    23,    -1,    36,    37,    -1,    -1,     3,    24,    -1,
+      -1,     5,     3,    39,    22,    40,    23,    -1,    40,    41,
+      -1,    -1,    48,     3,    25,    -1,    -1,     6,     3,    43,
+      22,    44,    23,    -1,    44,    45,    -1,    -1,     3,    26,
+      46,    27,    25,    -1,    46,    24,    47,    -1,    47,    -1,
+      -1,    48,     3,    -1,    49,    -1,    50,    -1,    51,    -1,
+       7,    -1,     8,    -1,     9,    -1,    10,    -1,    11,    -1,
+      12,    -1,    13,    -1,    14,    -1,    15,    -1,    16,    -1,
+      17,    -1,    18,    -1,     3,    -1,    19,    28,    49,    29,
+      -1,    20,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    26,    26,    27,    28,    29,    30,    31
+       0,    38,    38,    40,    41,    45,    45,    45,    50,    48,
+      61,    62,    67,    76,    74,    86,    87,    92,   101,    99,
+     111,   112,   117,   125,   127,   128,   133,   140,   142,   144,
+     148,   150,   152,   154,   156,   158,   160,   162,   164,   166,
+     168,   170,   172,   181,   188
 };
 #endif
 
@@ -425,8 +471,17 @@ static const yytype_uint8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "INT", "FLOAT", "STRING", "$accept",
-  "talky", 0
+  "$end", "error", "$undefined", "TOKEN_IDENTIFIER", "TOKEN_ENUM",
+  "TOKEN_STRUCT", "TOKEN_INTERFACE", "TOKEN_INT64", "TOKEN_UINT64",
+  "TOKEN_DOUBLE", "TOKEN_FLOAT", "TOKEN_INT32", "TOKEN_UINT32",
+  "TOKEN_INT16", "TOKEN_UINT16", "TOKEN_INT8", "TOKEN_UINT8", "TOKEN_BOOL",
+  "TOKEN_STRING", "TOKEN_ARRAY", "TOKEN_BYTES", "TOKEN_UINTEGER_LITERAL",
+  "'{'", "'}'", "','", "';'", "'('", "')'", "'['", "']'", "$accept",
+  "talky", "definitions", "definition", "enumeration", "@1",
+  "enumeration_body", "enumeration_member", "structure", "@2",
+  "structure_body", "structure_member", "interface", "@3",
+  "interface_body", "member_function", "function_params", "function_param",
+  "data_type", "basic_type", "array_type", "byte_array_type", 0
 };
 #endif
 
@@ -435,20 +490,30 @@ static const char *const yytname[] =
    token YYLEX-NUM.  */
 static const yytype_uint16 yytoknum[] =
 {
-       0,   256,   257,   258,   259,   260
+       0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
+     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
+     275,   276,   123,   125,    44,    59,    40,    41,    91,    93
 };
 # endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,     6,     7,     7,     7,     7,     7,     7
+       0,    30,    31,    32,    32,    33,    33,    33,    35,    34,
+      36,    36,    37,    39,    38,    40,    40,    41,    43,    42,
+      44,    44,    45,    46,    46,    46,    47,    48,    48,    48,
+      49,    49,    49,    49,    49,    49,    49,    49,    49,    49,
+      49,    49,    49,    50,    51
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     2,     2,     2,     1,     1,     1
+       0,     2,     1,     2,     0,     1,     1,     1,     0,     6,
+       2,     0,     2,     0,     6,     2,     0,     3,     0,     6,
+       2,     0,     5,     3,     1,     0,     2,     1,     1,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       1,     1,     1,     4,     1
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -456,13 +521,21 @@ static const yytype_uint8 yyr2[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,     5,     6,     7,     0,     2,     3,     4,     1
+       4,     0,     2,     1,     0,     0,     0,     3,     5,     6,
+       7,     8,    13,    18,     0,     0,     0,    11,    16,    21,
+       0,     0,     0,     0,     9,    10,    42,    30,    31,    32,
+      33,    34,    35,    36,    37,    38,    39,    40,    41,     0,
+      44,    14,    15,     0,    27,    28,    29,     0,    19,    20,
+      12,     0,     0,    25,     0,    17,     0,    24,     0,    43,
+       0,     0,    26,    23,    22
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     4
+      -1,     1,     2,     7,     8,    14,    20,    25,     9,    15,
+      21,    42,    10,    16,    22,    49,    56,    57,    58,    44,
+      45,    46
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
@@ -470,13 +543,21 @@ static const yytype_int8 yydefgoto[] =
 #define YYPACT_NINF -4
 static const yytype_int8 yypact[] =
 {
-      -3,    -3,    -3,    -3,     6,    -4,    -4,    -4,    -4
+      -4,     3,    53,    -4,    15,    35,    36,    -4,    -4,    -4,
+      -4,    -4,    -4,    -4,    18,    32,    33,    -4,    -4,    -4,
+      -2,    -3,    -1,    37,    -4,    -4,    -4,    -4,    -4,    -4,
+      -4,    -4,    -4,    -4,    -4,    -4,    -4,    -4,    -4,    38,
+      -4,    -4,    -4,    57,    -4,    -4,    -4,    39,    -4,    -4,
+      -4,    34,    42,    16,    40,    -4,    29,    -4,    59,    -4,
+      16,    43,    -4,    -4,    -4
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -4,     2
+      -4,    -4,    -4,    -4,    -4,    -4,    -4,    -4,    -4,    -4,
+      -4,    -4,    -4,    -4,    -4,    -4,    -4,     4,    49,    12,
+      -4,    -4
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -486,19 +567,39 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-       1,     2,     3,     5,     6,     7,     8
+      26,    23,    47,     3,    27,    28,    29,    30,    31,    32,
+      33,    34,    35,    36,    37,    38,    39,    40,    11,    26,
+      41,    24,    48,    27,    28,    29,    30,    31,    32,    33,
+      34,    35,    36,    37,    38,    39,    40,    26,    12,    13,
+      17,    27,    28,    29,    30,    31,    32,    33,    34,    35,
+      36,    37,    38,    60,    18,    19,    61,     4,     5,     6,
+      52,    50,    62,    54,    63,    53,    51,    55,    64,    59,
+      43
 };
 
 static const yytype_uint8 yycheck[] =
 {
-       3,     4,     5,     1,     2,     3,     0
+       3,     3,     3,     0,     7,     8,     9,    10,    11,    12,
+      13,    14,    15,    16,    17,    18,    19,    20,     3,     3,
+      23,    23,    23,     7,     8,     9,    10,    11,    12,    13,
+      14,    15,    16,    17,    18,    19,    20,     3,     3,     3,
+      22,     7,     8,     9,    10,    11,    12,    13,    14,    15,
+      16,    17,    18,    24,    22,    22,    27,     4,     5,     6,
+       3,    24,     3,    51,    60,    26,    28,    25,    25,    29,
+      21
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     3,     4,     5,     7,     7,     7,     7,     0
+       0,    31,    32,     0,     4,     5,     6,    33,    34,    38,
+      42,     3,     3,     3,    35,    39,    43,    22,    22,    22,
+      36,    40,    44,     3,    23,    37,     3,     7,     8,     9,
+      10,    11,    12,    13,    14,    15,    16,    17,    18,    19,
+      20,    23,    41,    48,    49,    50,    51,     3,    23,    45,
+      24,    28,     3,    26,    49,    25,    46,    47,    48,    29,
+      24,    27,     3,    47,    25
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1312,39 +1413,163 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 2:
-#line 26 "talky.y"
-    {cout << "bison found integer:" << (yyvsp[(1) - (2)].ival) << endl;;}
+        case 8:
+#line 50 "talky.y"
+    {
+		cout << "enum definition found " << (yyvsp[(2) - (2)]) << endl ;
+		Parser::getInstance().onNewEnum((yyvsp[(2) - (2)]));
+	;}
     break;
 
-  case 3:
-#line 27 "talky.y"
-    {cout << "bison found float:" << (yyvsp[(1) - (2)].fval) << endl;;}
+  case 9:
+#line 55 "talky.y"
+    {
+		//cout << "enum body:" << $$ << endl ;
+	;}
     break;
 
-  case 4:
-#line 28 "talky.y"
-    {cout << "bison found string:" << (yyvsp[(1) - (2)].sval) << endl;;}
+  case 12:
+#line 68 "talky.y"
+    {
+		Parser::getInstance().onEnumMember((yyvsp[(1) - (2)]));
+	;}
     break;
 
-  case 5:
-#line 29 "talky.y"
-    {cout << "bison found integer2:" << (yyvsp[(1) - (1)].ival) << endl;;}
+  case 13:
+#line 76 "talky.y"
+    {
+		Parser::getInstance().onNewStructure((yyvsp[(2) - (2)]));
+	;}
     break;
 
-  case 6:
-#line 30 "talky.y"
-    {cout << "bison found float2:" << (yyvsp[(1) - (1)].fval) << endl;;}
+  case 14:
+#line 80 "talky.y"
+    {
+		//cout << "structure body:" << $1 << endl ;	
+	;}
     break;
 
-  case 7:
-#line 31 "talky.y"
-    {cout << "bison found string2:" << (yyvsp[(1) - (1)].sval) << endl;;}
+  case 17:
+#line 93 "talky.y"
+    {
+		Parser::getInstance().onStructureMember((yyvsp[(2) - (3)]));
+	;}
+    break;
+
+  case 18:
+#line 101 "talky.y"
+    {
+		Parser::getInstance().onNewInterface((yyvsp[(2) - (2)]));	
+	;}
+    break;
+
+  case 19:
+#line 105 "talky.y"
+    {
+		//cout << "new interface:" << $2 << endl;
+	;}
+    break;
+
+  case 22:
+#line 119 "talky.y"
+    {	
+		Parser::getInstance().onMemberFunction((yyvsp[(1) - (5)]));
+	;}
+    break;
+
+  case 26:
+#line 134 "talky.y"
+    {
+		Parser::getInstance().onFunctionParam((yyvsp[(2) - (2)]));
+	;}
+    break;
+
+  case 30:
+#line 148 "talky.y"
+    { Parser::getInstance().onDataType(DT_INT64); ;}
+    break;
+
+  case 31:
+#line 150 "talky.y"
+    { Parser::getInstance().onDataType(DT_UINT64); ;}
+    break;
+
+  case 32:
+#line 152 "talky.y"
+    {Parser::getInstance().onDataType(DT_DOUBLE); ;}
+    break;
+
+  case 33:
+#line 154 "talky.y"
+    { Parser::getInstance().onDataType(DT_FLOAT); ;}
+    break;
+
+  case 34:
+#line 156 "talky.y"
+    { Parser::getInstance().onDataType(DT_INT32); ;}
+    break;
+
+  case 35:
+#line 158 "talky.y"
+    { Parser::getInstance().onDataType(DT_UINT32); ;}
+    break;
+
+  case 36:
+#line 160 "talky.y"
+    { Parser::getInstance().onDataType(DT_INT16); ;}
+    break;
+
+  case 37:
+#line 162 "talky.y"
+    { Parser::getInstance().onDataType(DT_UINT16); ;}
+    break;
+
+  case 38:
+#line 164 "talky.y"
+    { Parser::getInstance().onDataType(DT_INT8); ;}
+    break;
+
+  case 39:
+#line 166 "talky.y"
+    { Parser::getInstance().onDataType(DT_UINT8); ;}
+    break;
+
+  case 40:
+#line 168 "talky.y"
+    { Parser::getInstance().onDataType(DT_BOOL); ;}
+    break;
+
+  case 41:
+#line 170 "talky.y"
+    { Parser::getInstance().onDataType(DT_STRING); ;}
+    break;
+
+  case 42:
+#line 173 "talky.y"
+    {
+		/* user defined data structure */
+		Definition* definition = Parser::getInstance().getDefinition((yyvsp[(1) - (1)]));
+		Parser::getInstance().onUserDataType(definition);
+	;}
+    break;
+
+  case 43:
+#line 182 "talky.y"
+    {
+		Parser::getInstance().onNewArray();
+	;}
+    break;
+
+  case 44:
+#line 189 "talky.y"
+    {
+		Parser::getInstance().onNewByteArray();	
+	;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1348 "talky.tab.c"
+#line 1573 "talky.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1558,7 +1783,7 @@ yyreturn:
 }
 
 
-#line 34 "talky.y"
+#line 194 "talky.y"
 
 int main(int argc, char** argv){
 	FILE* talky_flex_input_file = fopen(argv[1], "r");
@@ -1577,6 +1802,6 @@ int main(int argc, char** argv){
 }
 
 void yyerror(const char* s){
-	cerr << "parse error " << s << endl;
-	exit(-1);
+	cerr << "parse error " << std::string( s) << endl;
+	//exit(-1);
 }

@@ -1,8 +1,49 @@
-322
-test
-3.21
+/*
+this is a show case of what talky can do and how to do that.
+let's assume we are making an online tank arena game "Tank!!!",
+in the arena there could be AI players and human players, each time you
+kill a player, you get some points, and there are all kinds of magical items,
+say item to speed up and item to freeze other player and item to gain hp, etc, etc.
+*/
 
+enum PlayerType 
+{
+	PT_AI,
+	PT_HUMAN,
+}
 
-!
-#
+struct Point3d {
+	float x;
+	float y;
+	float z;
+}
+
+struct Item {
+	int8 id;
+	string name;
+}
+
+struct ItemInst {
+	int8 seq;
+	int8 itemId;
+	int8 count;
+}
+
+struct Player {
+	string name;
+	int8 id;
+	Point3d position;
+	array[ItemInst] itemInsts;
+}
+
+interface Client2Server {
+	fire(int8 playerId);
+	useItem(int8 seq);
+}
+
+interface Server2Client {
+	onHit(int8 attacker, int16 damage);
+	onSync(array[Player] players);
+}
+
 

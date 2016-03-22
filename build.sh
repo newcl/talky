@@ -9,4 +9,4 @@ flex talky.l
 cd ..
 
 # -ll for mac os, others should use -lfl if flex is installed correctly
-g++ ./bison/talky.tab.c ./flex/lex.yy.c -ll -o talky
+g++ ./parser/src/parser.cpp ./bison/talky.tab.c ./flex/lex.yy.c -ll -o talky

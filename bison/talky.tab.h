@@ -39,30 +39,53 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     INT = 258,
-     FLOAT = 259,
-     STRING = 260
+     TOKEN_IDENTIFIER = 258,
+     TOKEN_ENUM = 259,
+     TOKEN_STRUCT = 260,
+     TOKEN_INTERFACE = 261,
+     TOKEN_INT64 = 262,
+     TOKEN_UINT64 = 263,
+     TOKEN_DOUBLE = 264,
+     TOKEN_FLOAT = 265,
+     TOKEN_INT32 = 266,
+     TOKEN_UINT32 = 267,
+     TOKEN_INT16 = 268,
+     TOKEN_UINT16 = 269,
+     TOKEN_INT8 = 270,
+     TOKEN_UINT8 = 271,
+     TOKEN_BOOL = 272,
+     TOKEN_STRING = 273,
+     TOKEN_ARRAY = 274,
+     TOKEN_BYTES = 275,
+     TOKEN_UINTEGER_LITERAL = 276
    };
 #endif
 /* Tokens.  */
-#define INT 258
-#define FLOAT 259
-#define STRING 260
+#define TOKEN_IDENTIFIER 258
+#define TOKEN_ENUM 259
+#define TOKEN_STRUCT 260
+#define TOKEN_INTERFACE 261
+#define TOKEN_INT64 262
+#define TOKEN_UINT64 263
+#define TOKEN_DOUBLE 264
+#define TOKEN_FLOAT 265
+#define TOKEN_INT32 266
+#define TOKEN_UINT32 267
+#define TOKEN_INT16 268
+#define TOKEN_UINT16 269
+#define TOKEN_INT8 270
+#define TOKEN_UINT8 271
+#define TOKEN_BOOL 272
+#define TOKEN_STRING 273
+#define TOKEN_ARRAY 274
+#define TOKEN_BYTES 275
+#define TOKEN_UINTEGER_LITERAL 276
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE
-#line 14 "talky.y"
-{
-	int ival;
-	float fval;
-	char* sval;
-}
-/* Line 1529 of yacc.c.  */
-#line 65 "talky.tab.h"
-	YYSTYPE;
+typedef int YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1
