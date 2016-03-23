@@ -12,6 +12,37 @@ enum PlayerType
 	PT_HUMAN,
 }
 
+/*
+
+enum is mapped to byte(8 bits)
+
+public class PlayerType{
+	public final static byte PT_AI = 0;
+	public final static byte PT_HUMAN = 1;
+	public final static byte ENUM_COUNT = 2;
+
+	public static String toString(byte value){
+		if(value == PT_AI){
+			return "PT_AI";
+		}else if(value == PT_HUMAN){
+			return "PT_HUMAN";
+		}
+
+		return null;
+	}
+
+	public static byte toValue(String name){
+		if(name.equals("PT_AI")){
+			return PT_AI;
+		}else if(name.equals("PT_HUMAN")){
+			return PT_HUMAN;
+		}
+
+		return -1;
+	}
+}
+*/
+
 struct Point3d {
 	float x;
 	float y;
@@ -36,6 +67,68 @@ struct Player {
 	array[ItemInst] itemInsts;
 }
 
+/*
+public class Player{
+	public String name;
+	public byte id;
+	public Position3d position = new Position3d();
+	public ItemInst[] itemInsts;
+
+	public void serialize(DataOutputStream dos){
+		FieldMark fm = new FieldMark(1);
+		fm.mark(name == null || name.length == 0 ? false : true);
+		fm.mark(id == 0 ? false : true);
+		fm.mark(true);
+		fm.mark(itemInsts == null || itemInsts.length == 0 ? false : true);
+
+		if(name != null && name.length > 0){
+			byte[] theBytes = name.getBytes("UTF-8");
+			SerializeUtil.writeVariableLength(dos, theBytes.length);
+			dos.write(theBytes);
+		}
+
+		if(id != 0){
+			dos.writeByte(id);
+		}
+
+		position.serialize(dos);
+
+		if(itemInsts != null && itemInsts.length > 0){
+			SerializeUtil.writeVariableLength(itemInsts.length);
+			for(int i=0 ;i < itemInsts.length; i++){
+				itemInsts[i].serialize(dos);
+			}
+		}
+	}
+
+	public void deserialize(DataInputStream dis){
+		FieldMark fm = new FieldMark(1);
+		dis.read(fm.getBytes());
+		if(fm.readMark()){
+			int theLength = SerializeUtil.readVariableLength();
+			byte[] theBytes = new byte[theLength];
+			dis.read(theBytes);
+			name = new String(theBytes, "UTF-8");
+		}
+		if(fm.readMark()){
+			id = dis.readByte();			
+		}
+		if(fm.readMark()){
+			position.deserialize(dis);
+		}
+		
+		if(fm.readMark()){
+			int theLength = SerializeUtil.readVariableLength(dis);
+			itemInsts = new ItemInst[theLength];
+			for(int i=0; i < theLength; i++){
+				itemInsts[i] = new ItemInst();
+				itemInsts[i].deserialize(dis);
+			}
+		}
+	}
+}
+*/
+
 interface Client2Server {
 	fire(int8 playerId);
 	useItem(int8 seq);
@@ -45,5 +138,55 @@ interface Server2Client {
 	onHit(int8 attacker, int16 damage);
 	onSync(array[Player] players);
 }
+
+/*
+public abstract class Server2ClientProxy {
+	public abstract void onHit(byte attacker, short damage);
+	public abstract void onSync(Player[] players);
+}
+
+public abstract class Server2ClientStub {
+	protected abstract DataOutputSteam begin();
+	protected abstract void end();
+
+	public void onHit(byte attacker, short damage){
+		DataOutputSteam dos = begin();
+		dos.writeByte(0);
+		dos.writeByte(attacker);
+		dos.writeShort(damage);
+		end();
+	}
+	public void onSync(Player[] players){
+		DataOutputSteam dos = begin();
+		dos.writeByte(1);
+		SerializeUtil.writeVariableLength(dos, players.length);
+		for(int i=0; i < players.length; i++){
+			players[i].serialize(dos);
+		}
+		end();	
+	}
+}
+
+public class Server2ClientDispatcher{
+	public static void dispatch(DataInputSteam dis, Server2ClientProxy proxy){
+		byte id = dis.readByte();
+		if(id == 0){
+			byte attacker = dis.readByte();
+			short damage = dis.readShort();
+			proxy.onHit(attacker, damage);
+		}else if(id == 1){
+			int theLength = SerializeUtil.readVariableLength(dis);
+			Player[] players = new Player[theLength];
+			for(int i=0 ;i < theLength; i++){
+				players[i] = new Player();
+				players[i].deserialize(dis);
+			}
+
+			proxy.onSync(players);
+		}
+	}
+}
+
+*/
 
 
