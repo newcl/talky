@@ -806,103 +806,115 @@ case 4:
 YY_RULE_SETUP
 #line 32 "talky.l"
 {
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_INT64;
 				}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 36 "talky.l"
+#line 37 "talky.l"
 {
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_UINT64;
 				}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 40 "talky.l"
+#line 42 "talky.l"
 {
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_DOUBLE;
 				}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 44 "talky.l"
+#line 47 "talky.l"
 {
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_FLOAT;
 				}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 48 "talky.l"
+#line 52 "talky.l"
 {
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_INT32;
 				}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 52 "talky.l"
+#line 57 "talky.l"
 {
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_UINT32;
 				}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 56 "talky.l"
+#line 62 "talky.l"
 {
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_INT16;
 				}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 60 "talky.l"
+#line 67 "talky.l"
 {
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_UINT16;
 				}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 64 "talky.l"
+#line 72 "talky.l"
 {
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_INT8;
 				}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 68 "talky.l"
+#line 77 "talky.l"
 {
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_UINT8;
 				}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 72 "talky.l"
+#line 82 "talky.l"
 {
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_BOOL;
 				}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 76 "talky.l"
+#line 87 "talky.l"
 {
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_STRING;
 				}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 80 "talky.l"
+#line 92 "talky.l"
 {
 					return TOKEN_ARRAY;
 				}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 84 "talky.l"
+#line 96 "talky.l"
 {
 					return TOKEN_BYTES;
 				}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 88 "talky.l"
+#line 100 "talky.l"
 {
 					yylval = std::string( yytext, yyleng );
 					return TOKEN_IDENTIFIER;
@@ -910,7 +922,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 92 "talky.l"
+#line 104 "talky.l"
 
 	YY_BREAK
 
@@ -918,14 +930,14 @@ YY_RULE_SETUP
 case 20:
 /* rule 20 can match eol */
 YY_RULE_SETUP
-#line 96 "talky.l"
+#line 108 "talky.l"
 {
 					Parser::getInstance().onNewLine();
                 }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 99 "talky.l"
+#line 111 "talky.l"
 {
 					for(;;) {
 						char const c = yyinput();
@@ -946,24 +958,24 @@ YY_RULE_SETUP
 case 22:
 /* rule 22 can match eol */
 YY_RULE_SETUP
-#line 115 "talky.l"
+#line 127 "talky.l"
 {
 					Parser::getInstance().onNewLine();
 				}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 118 "talky.l"
+#line 130 "talky.l"
 {
 					return yytext[0];
 				}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 122 "talky.l"
+#line 134 "talky.l"
 ECHO;
 	YY_BREAK
-#line 967 "lex.yy.c"
+#line 979 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1960,7 +1972,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 122 "talky.l"
+#line 134 "talky.l"
 
 
 /* part 3 code */

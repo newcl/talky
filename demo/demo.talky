@@ -63,8 +63,8 @@ struct ItemInst {
 struct Player {
 	string name;
 	int8 id;
-	Point3d position;
 	array[ItemInst] itemInsts;
+	Point3d position;		
 }
 
 /*

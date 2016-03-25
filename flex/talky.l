@@ -30,50 +30,62 @@ interface		{
 				}
 
 int64			{
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_INT64;
 				}
 
 uint64			{
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_UINT64;
 				}
 
 double			{
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_DOUBLE;
 				}
 
 float			{
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_FLOAT;
 				}
 
 int32			{
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_INT32;
 				}
 
 uint32			{
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_UINT32;
 				}
 
 int16			{
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_INT16;
 				}
 
 uint16			{
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_UINT16;
 				}
 
 int8			{
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_INT8;
 				}
 
 uint8			{
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_UINT8;
 				}
 
 bool			{
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_BOOL;
 				}
 
 string			{
+					yylval = std::string( yytext, yyleng );
 					return TOKEN_STRING;
 				}
 

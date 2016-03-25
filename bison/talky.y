@@ -53,7 +53,6 @@ enumeration:
 	}
 	'{' enumeration_body '}'
 	{
-		//cout << "enum body:" << $$ << endl ;
 	}
 	;
 
@@ -78,7 +77,6 @@ structure:
 	}
 	'{' structure_body '}'
 	{
-		//cout << "structure body:" << $1 << endl ;	
 	}
 	;
 
@@ -103,7 +101,6 @@ interface:
 	}
 	'{' interface_body '}'
 	{
-		//cout << "new interface:" << $2 << endl;
 	}
 	;
 
@@ -139,13 +136,25 @@ function_param:
 data_type:
 	basic_type
 	|
-	array_type
+	user_type
+	|
+	user_array_type
+	|
+	primitive_array_type
 	|
 	byte_array_type
 	;
-
+user_type:
+	TOKEN_IDENTIFIER	
+	{
+		Parser::getInstance().onUserDataType($1);
+	}
+	;
 basic_type:
-	TOKEN_INT64	{ Parser::getInstance().onDataType(DT_INT64); }
+	TOKEN_INT64	
+	{ 
+		Parser::getInstance().onDataType(DT_INT64); 
+	}
 	|
 	TOKEN_UINT64 { Parser::getInstance().onDataType(DT_UINT64); }
 	|
@@ -159,7 +168,7 @@ basic_type:
 	|
 	TOKEN_INT16	{ Parser::getInstance().onDataType(DT_INT16); }
 	|
-	TOKEN_UINT16	{ Parser::getInstance().onDataType(DT_UINT16); }
+	TOKEN_UINT16 { Parser::getInstance().onDataType(DT_UINT16); }
 	|
 	TOKEN_INT8	{ Parser::getInstance().onDataType(DT_INT8); }
 	|
@@ -168,19 +177,20 @@ basic_type:
 	TOKEN_BOOL	{ Parser::getInstance().onDataType(DT_BOOL); }
 	|
 	TOKEN_STRING { Parser::getInstance().onDataType(DT_STRING); }
-	|
-	TOKEN_IDENTIFIER	
-	{
-		/* user defined data structure */
-		Definition* definition = Parser::getInstance().getDefinition($1);
-		Parser::getInstance().onUserDataType(definition);
-	}
 	;
 
-array_type:
+user_array_type:
+	TOKEN_ARRAY '[' user_type ']'
+	{
+		Parser::getInstance().onNewUserArray($3);
+	}
+	;
+	
+
+primitive_array_type:
 	TOKEN_ARRAY '[' basic_type ']'
 	{
-		Parser::getInstance().onNewArray();
+		Parser::getInstance().onNewPrimitiveArray($3);
 	}
 	;
 
@@ -192,7 +202,11 @@ byte_array_type:
 	;
 
 %%
+void init();
+
 int main(int argc, char** argv){
+	init();
+
 	FILE* talky_flex_input_file = fopen(argv[1], "r");
 	if(!talky_flex_input_file){
 		cout << "no input found " << argv[1] << endl;
@@ -205,10 +219,13 @@ int main(int argc, char** argv){
 		yyparse();
 	}while(!feof(yyin));
 
-	yylex();
+	CodeGenerator* cg = new JavaCodeGenerator();
+	cg->generate(Parser::getInstance().definitions, "/Users/chenliang/tmp");
+
+	//yylex();
 }
 
 void yyerror(const char* s){
-	cerr << "parse error " << std::string( s) << endl;
+	cerr << "parse error " << std::string(s) << endl;
 	//exit(-1);
 }
