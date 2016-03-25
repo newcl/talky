@@ -6,6 +6,8 @@
 #include <map>
 #include <algorithm>
 #include <fstream>
+#include <istream>
+#include <ostream>
 #include <sstream>
 using namespace std;
 
@@ -323,37 +325,43 @@ class JavaCodeGenerator : public CodeGenerator {
             return "String";
         }
         
-        return "unknown primitive type " + dataType;
+        return "unknown primitive type " + itoa(dataType);
+    }
+
+    string itoa(int i){
+		ostringstream oss;
+        oss << i;
+        return oss.str();
     }
     
-    void serializeField(TypeDeclaration& typeDeclaration){
+    void serializeField(ofstream& ofs, TypeDeclaration& theField){
         if(theField.declarationType == DLT_ARRAY){
             ofs << "SerializeUtil.writeVariableLength(dos, " + theField.name + ".length);" << endl;
             if(theField.userTypeDefinition == NULL){
                 
                 ofs << "for(int i=0; i < "+theField.name+".length;i++){" << endl;
                 if(theField.dataType == DT_INT64)
-                    ofs << "dos.writeLong("+theField.name+"["+i+"]);" << endl;
+                    ofs << "dos.writeLong("+theField.name+"[i]);" << endl;
                 else if(theField.dataType == DT_UINT64)
-                    ofs << "dos.writeLong("+theField.name+"["+i+"]);" << endl;
+                    ofs << "dos.writeLong("+theField.name+"[i]);" << endl;
                 else if (theField.dataType == DT_DOUBLE)
-                    ofs << "dos.writeDouble("+theField.name+"["+i+"]);" << endl;
+                    ofs << "dos.writeDouble("+theField.name+"[]);" << endl;
                 else if (theField.dataType == DT_FLOAT)
-                    ofs << "dos.writeFloat("+theField.name+"["+i+"]);" << endl;
+                    ofs << "dos.writeFloat("+theField.name+"[]);" << endl;
                 else if (theField.dataType == DT_INT32)
-                    ofs << "dos.writeInt("+theField.name+"["+i+"]);" << endl;
+                    ofs << "dos.writeInt("+theField.name+"[]);" << endl;
                 else if (theField.dataType == DT_UINT32)
-                    ofs << "dos.writeInt("+theField.name+"["+i+"]);" << endl;
+                    ofs << "dos.writeInt("+theField.name+"[]);" << endl;
                 else if (theField.dataType == DT_INT16)
-                    ofs << "dos.writeShort("+theField.name+"["+i+"]);" << endl;
+                    ofs << "dos.writeShort("+theField.name+"[]);" << endl;
                 else if (theField.dataType == DT_UINT16)
-                    ofs << "dos.writeShort("+theField.name+"["+i+"]);" << endl;
-                else if (theField.dataType == DT_INT8))
-                    ofs << "dos.writeByte("+theField.name+"["+i+"]);" << endl;
+                    ofs << "dos.writeShort("+theField.name+"[]);" << endl;
+                else if (theField.dataType == DT_INT8)
+                    ofs << "dos.writeByte("+theField.name+"[]);" << endl;
                 else if(theField.dataType == DT_BOOL)
-                    ofs << "dos.writeBoolean("+theField.name+"["+i+"]);" << endl;
+                    ofs << "dos.writeBoolean("+theField.name+"[]);" << endl;
                 else if(theField.dataType == DT_STRING)
-                    ofs << "dos.writeUTF("+theField.name+"["+i+"]);" << endl;
+                    ofs << "dos.writeUTF("+theField.name+"[]);" << endl;
                 
                 ofs << "}" << endl;
             }else{
@@ -366,39 +374,39 @@ class JavaCodeGenerator : public CodeGenerator {
                         ofs << theField.name + ".serialize(dos);" << endl;
                     } else if(theField.declarationType == DLT_PRIMITIVE){
                         if(theField.dataType == DT_INT64)
-                            ofs << "dos.writeLong("+theField.name+"["+i+"]);" << endl;
+                            ofs << "dos.writeLong("+theField.name+");" << endl;
                         else if(theField.dataType == DT_UINT64)
-                            ofs << "dos.writeLong("+theField.name+"["+i+"]);" << endl;
+                            ofs << "dos.writeLong("+theField.name+");" << endl;
                         else if (theField.dataType == DT_DOUBLE)
-                            ofs << "dos.writeDouble("+theField.name+"["+i+"]);" << endl;
+                            ofs << "dos.writeDouble("+theField.name+");" << endl;
                         else if (theField.dataType == DT_FLOAT)
-                            ofs << "dos.writeFloat("+theField.name+"["+i+"]);" << endl;
+                            ofs << "dos.writeFloat("+theField.name+");" << endl;
                         else if (theField.dataType == DT_INT32)
-                            ofs << "dos.writeInt("+theField.name+"["+i+"]);" << endl;
+                            ofs << "dos.writeInt("+theField.name+");" << endl;
                         else if (theField.dataType == DT_UINT32)
-                            ofs << "dos.writeInt("+theField.name+"["+i+"]);" << endl;
+                            ofs << "dos.writeInt("+theField.name+");" << endl;
                         else if (theField.dataType == DT_INT16)
-                            ofs << "dos.writeShort("+theField.name+"["+i+"]);" << endl;
+                            ofs << "dos.writeShort("+theField.name+");" << endl;
                         else if (theField.dataType == DT_UINT16)
-                            ofs << "dos.writeShort("+theField.name+"["+i+"]);" << endl;
-                        else if (theField.dataType == DT_INT8))
-                            ofs << "dos.writeByte("+theField.name+"["+i+"]);" << endl;
+                            ofs << "dos.writeShort("+theField.name+");" << endl;
+                        else if (theField.dataType == DT_INT8)
+                            ofs << "dos.writeByte("+theField.name+");" << endl;
                         else if(theField.dataType == DT_BOOL)
-                            ofs << "dos.writeBoolean("+theField.name+"["+i+"]);" << endl;
+                            ofs << "dos.writeBoolean("+theField.name+");" << endl;
                         else if(theField.dataType == DT_STRING)
-                            ofs << "dos.writeUTF("+theField.name+"["+i+"]);" << endl;
+                            ofs << "dos.writeUTF("+theField.name+");" << endl;
                     }else if(theField.declarationType == DLT_BYTE_ARRAY){
                         ofs << "SerializeUtil.writeVariableLength(dos, " + theField.name + ".length);" << endl;
                         ofs << "dos.write(" + theField.name + ");" << endl;
                     }
     }
 
-    void nextParamName(){
+    string nextParamName(){
     	static int index = 0;
-    	return "__" + (index++) + "__";
+    	return "__" + itoa((index++)) + "__";
     }
 
-    void deserializeField(TypeDeclaration& typeDeclaration){
+    void deserializeField(ofstream& ofs, TypeDeclaration& theField){
 
         if(theField.declarationType == DLT_ARRAY){
         	string arrayLength = nextParamName();
@@ -407,27 +415,27 @@ class JavaCodeGenerator : public CodeGenerator {
             	ofs << theField.name + " = new " + getPrimitiveTypeName(theField.dataType) + "["+arrayLength+"];" << endl;
                 ofs << "for(int i=0; i < "+arrayLength+";i++){" << endl;
                 if(theField.dataType == DT_INT64)
-                    ofs << theField.name + "["+i+"] = dis.readLong();" << endl;
+                    ofs << theField.name + "[i] = dis.readLong();" << endl;
                 else if(theField.dataType == DT_UINT64)
-                    ofs << theField.name + "["+i+"] = dis.readLong();" << endl;
+                    ofs << theField.name + "[i] = dis.readLong();" << endl;
                 else if (theField.dataType == DT_DOUBLE)
-                    ofs << theField.name + "["+i+"] = dis.readDouble();" << endl;
+                    ofs << theField.name + "[i] = dis.readDouble();" << endl;
                 else if (theField.dataType == DT_FLOAT)
-                    ofs << theField.name + "["+i+"] = dis.readFloat();" << endl;
+                    ofs << theField.name + "[i] = dis.readFloat();" << endl;
                 else if (theField.dataType == DT_INT32)
-                    ofs << theField.name + "["+i+"] = dis.readInt();" << endl;
+                    ofs << theField.name + "[i] = dis.readInt();" << endl;
                 else if (theField.dataType == DT_UINT32)
-                    ofs << theField.name + "["+i+"] = dis.readInt();" << endl;
+                    ofs << theField.name + "[i] = dis.readInt();" << endl;
                 else if (theField.dataType == DT_INT16)
-                    ofs << theField.name + "["+i+"] = dis.readShort();" << endl;
+                    ofs << theField.name + "[i] = dis.readShort();" << endl;
                 else if (theField.dataType == DT_UINT16)
-                    ofs << theField.name + "["+i+"] = dis.readShort();" << endl;
-                else if (theField.dataType == DT_INT8))
-                    ofs << theField.name + "["+i+"] = dis.readByte();" << endl;
+                    ofs << theField.name + "[i] = dis.readShort();" << endl;
+                else if (theField.dataType == DT_INT8)
+                    ofs << theField.name + "[i] = dis.readByte();" << endl;
                 else if(theField.dataType == DT_BOOL)
-                    ofs << theField.name + "["+i+"] = dis.readBoolean();" << endl;
+                    ofs << theField.name + "[i] = dis.readBoolean();" << endl;
                 else if(theField.dataType == DT_STRING)
-                    ofs << theField.name + "["+i+"] = dis.readUTF();" << endl;
+                    ofs << theField.name + "[i] = dis.readUTF();" << endl;
                 
                 ofs << "}" << endl;
             }else{
@@ -440,27 +448,27 @@ class JavaCodeGenerator : public CodeGenerator {
                         ofs << theField.name + ".deserialize(dis);" << endl;
                     } else if(theField.declarationType == DLT_PRIMITIVE){
                         if(theField.dataType == DT_INT64)
-		                    ofs << theField.name + "["+i+"] = dis.readLong();" << endl;
+		                    ofs << theField.name + " = dis.readLong();" << endl;
 		                else if(theField.dataType == DT_UINT64)
-		                    ofs << theField.name + "["+i+"] = dis.readLong();" << endl;
+		                    ofs << theField.name + " = dis.readLong();" << endl;
 		                else if (theField.dataType == DT_DOUBLE)
-		                    ofs << theField.name + "["+i+"] = dis.readDouble();" << endl;
+		                    ofs << theField.name + " = dis.readDouble();" << endl;
 		                else if (theField.dataType == DT_FLOAT)
-		                    ofs << theField.name + "["+i+"] = dis.readFloat();" << endl;
+		                    ofs << theField.name + " = dis.readFloat();" << endl;
 		                else if (theField.dataType == DT_INT32)
-		                    ofs << theField.name + "["+i+"] = dis.readInt();" << endl;
+		                    ofs << theField.name + " = dis.readInt();" << endl;
 		                else if (theField.dataType == DT_UINT32)
-		                    ofs << theField.name + "["+i+"] = dis.readInt();" << endl;
+		                    ofs << theField.name + " = dis.readInt();" << endl;
 		                else if (theField.dataType == DT_INT16)
-		                    ofs << theField.name + "["+i+"] = dis.readShort();" << endl;
+		                    ofs << theField.name + " = dis.readShort();" << endl;
 		                else if (theField.dataType == DT_UINT16)
-		                    ofs << theField.name + "["+i+"] = dis.readShort();" << endl;
-		                else if (theField.dataType == DT_INT8))
-		                    ofs << theField.name + "["+i+"] = dis.readByte();" << endl;
+		                    ofs << theField.name + " = dis.readShort();" << endl;
+		                else if (theField.dataType == DT_INT8)
+		                    ofs << theField.name + " = dis.readByte();" << endl;
 		                else if(theField.dataType == DT_BOOL)
-		                    ofs << theField.name + "["+i+"] = dis.readBoolean();" << endl;
+		                    ofs << theField.name + " = dis.readBoolean();" << endl;
 		                else if(theField.dataType == DT_STRING)
-		                    ofs << theField.name + "["+i+"] = dis.readUTF();" << endl;
+		                    ofs << theField.name + " = dis.readUTF();" << endl;
                     }else if(theField.declarationType == DLT_BYTE_ARRAY){
                     	string arrayLength = nextParamName();
             			ofs << "int " + arrayLength + " = SerializeUtil.readVariableLength(dis);" << endl;
@@ -470,17 +478,29 @@ class JavaCodeGenerator : public CodeGenerator {
     }
     
     string getParamListString(Function* function){
-        std::vector<TypeDeclaration*> params;
-        sstream ss;
-        for(int i=0;i < function.params.size();i++){
-            string typeName = getTypeName(*functions.params[i]);
-            ss << typeName << ss << (*functions.params[i]).name;
-            if(i < function.params.size() - 1){
+        ostringstream ss;
+        for(int i=0;i < function->params.size();i++){
+            string typeName = getTypeName(*(function->params[i]));
+            ss << typeName << " " << (*(function->params[i])).name;
+            if(i < function->params.size() - 1){
             	ss << ",";
             }
         }
 
-        return ss.toString();
+        return ss.str();
+    }
+
+    string getParamNameListString(Function* function){
+        ostringstream ss;
+        for(int i=0;i < function->params.size();i++){
+            string typeName = getTypeName(*(function->params[i]));
+            ss << (*(function->params[i])).name;
+            if(i < function->params.size() - 1){
+            	ss << ",";
+            }
+        }
+
+        return ss.str();
     }
     
     void generate(map<string, Definition*>& definitions, string path){
@@ -522,6 +542,9 @@ class JavaCodeGenerator : public CodeGenerator {
                 ofs << "}" << endl;
                 
                 ofs << "}" << endl;
+
+                ofs << "}" << endl;			
+            	ofs.close();
             } else if(type == DFT_STRUCTURE){
                 ofstream ofs(path + "/" + name + ".java");
                 ofs << "public class " << name << "{" << endl;
@@ -569,8 +592,8 @@ class JavaCodeGenerator : public CodeGenerator {
                 //actual serilization code
                 for(int i=0; i < fields.size(); i++){
                     TypeDeclaration& theField = *fields[i];
-                    ofs << "if(fm.isMarked("+i+")){" << endl;
-                    serializeField(theField);
+                    ofs << "if(fm.isMarked("+itoa(i)+")){" << endl;
+                    serializeField(ofs, theField);
                     ofs << "}" << endl;		
                 }	 
                 
@@ -584,45 +607,52 @@ class JavaCodeGenerator : public CodeGenerator {
 				for(int i=0; i < fields.size(); i++){
                     TypeDeclaration& theField = *fields[i];
                     ofs << "if(fm.readMark()){" << endl;
-                    deserializeField(theField);
+                    deserializeField(ofs, theField);
                     ofs << "}" << endl;		
                 }
                 ofs << "}" << endl;		
+
+                ofs << "}" << endl;			
+            	ofs.close();
             } else if(type == DFT_INTERFACE){
                 Interface& theInterface = *dynamic_cast<Interface*>(definition);
                 // 1. proxy class
                 ofstream ofs(path + "/" + name + "Proxy" + ".java");
-                ofs << "public abstract class " +  + "Proxy {" << endl;
+                ofs << "public abstract class " + name + "Proxy {" << endl;
                 for(int i=0; i < theInterface.functions.size();i++){
-                    ofs << "public abstract void "+ theInterface.functions[i]->name +"(" + getParamListString(theInterface.functions[i]) + ");"	
+                    ofs << "public abstract void "+ theInterface.functions[i]->name +"(" + getParamListString(theInterface.functions[i]) + ");"	<< endl;
                 }
-                ofs << "}" << endl;			
+                ofs << "}" << endl;		
+                ofs.close();
+
+
                 // 2. stub
-                ofs = ofstream(path + "/" + name + "Stub" + ".java");
-                ofs << "public abstract class " +  + "Stub {" << endl;
+                ofs.open(path + "/" + name + "Stub" + ".java");
+                ofs << "public abstract class " + name + "Stub {" << endl;
                 for(int i=0; i < theInterface.functions.size();i++){
-                    ofs << "public void "+ theInterface.functions[i]->name +"(" + getParamListString(theInterface.functions[i]) + "){"	
+                    ofs << "public void "+ theInterface.functions[i]->name +"(" + getParamListString(theInterface.functions[i]) + "){" << endl;	
 					ofs << "DataOutputSteam dos = begin();" << endl;
-                    for(int i=0;i < function.params.size();i++){
-                    	serializeField(*Function.params[i]);
+                    for(int i=0;i < theInterface.functions[i]->params.size();i++){
+                    	serializeField(ofs, *(theInterface.functions[i]->params[i]));
                     }
 
                     ofs << "end();" << endl;
                     ofs << "}" << endl;
                 }
                 ofs << "}" << endl;			
+                ofs.close();
+
                 // 3. dispatcher
-                ofs = ofstream(path + "/" + name + "Dispatcher" + ".java");
-                ofs << "public class " +  + "Dispatcher {" << endl;
+                ofs.open(path + "/" + name + "Dispatcher" + ".java");
+                ofs << "public class " + name + "Dispatcher {" << endl;
 
                 // 1. dispatcher method
-                ofs << "public static void dispatch(DataInputStream dis, "+name+"Proxy proxy) throws Exception
-	{" << endl;
+                ofs << "public static void dispatch(DataInputStream dis, "+name+"Proxy proxy) throws Exception{" << endl;
 				ofs << "int fid = (int)(dis.read()&0xFFFF);"<<endl;
 				ofs << "switch(fid)" << endl;
 				ofs << "{" << endl;
 				for(int i=0; i < theInterface.functions.size();i++){
-					ofs << "case " + i + ":" << endl;
+					ofs << "case " + itoa(i) + ":" << endl;
 					ofs << "{" << endl;
 					ofs << theInterface.functions[i]->name << "(dis, proxy);" << endl;
 					ofs << "}" << endl;
@@ -632,22 +662,28 @@ class JavaCodeGenerator : public CodeGenerator {
 				ofs << "}" << endl; // dispatcher
                 // 2. deserialize param and call proxy
                 for(int i=0; i < theInterface.functions.size();i++){
-                	ofs << "protected static void "+theInterface.functions[i]->name+"(DataInputStream dis, "+name+"Proxy proxy) throws Exception" << endl;
-                	for(int j=0; j<theInterface.functions[i].params.size();j++){
-                		string typeName = getTypeName(*theInterface.functions[i].params[j]);
-                		ofs << typeName << theInterface.functions[i].params[j]->name << ";" << endl;
+                	ofs << "protected static void "+theInterface.functions[i]->name+"(DataInputStream dis, "+name+"Proxy proxy) throws Exception{" << endl;
+                	for(int j=0; j<theInterface.functions[i]->params.size();j++){
+                		string typeName = getTypeName(*theInterface.functions[i]->params[j]);
+                		ofs << typeName << " " << theInterface.functions[i]->params[j]->name << ";" << endl;
                 	}
-					for(int j=0; j<theInterface.functions[i].params.size();j++){
-                		deserializeField(*theInterface.functions[i].params[j]);
+					for(int j=0; j<theInterface.functions[i]->params.size();j++){
+                		deserializeField(ofs, *theInterface.functions[i]->params[j]);
                 	}
+
+                	//make the call
+                	ofs << "proxy." << theInterface.functions[i]->name << "(" + getParamNameListString(theInterface.functions[i]) + ");" << endl;
 
                 	ofs << "}" << endl;
                 }
                 ofs << "}" << endl;			
+
+                ofs << "}" << endl;			
+            	ofs.close();
+            	
             }
             
-            ofs << "}" << endl;			
-            ofs.close();
+            
         }
         
         
