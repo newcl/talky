@@ -2,6 +2,9 @@ package test;
 
 import info.chenliang.talky.SerializationUtil;
 import junit.framework.TestCase;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,6 +18,10 @@ import java.util.List;
  */
 public class SerializationUtilTest extends TestCase {
 
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
+    @Test
     public void testSerializeUtilBoundary() throws Exception{
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
@@ -25,8 +32,13 @@ public class SerializationUtilTest extends TestCase {
 
         DataInputStream dis = new DataInputStream(new ByteArrayInputStream(bytes));
         assertEquals(SerializationUtil.MAX, SerializationUtil.readVariableLength(dis));
+
+        exception.expect(IllegalArgumentException.class);
+        SerializationUtil.writeVariableLength(dos, -1);
+
     }
 
+    @Test
     public void testSerializeUtilRandom() throws Exception{
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);

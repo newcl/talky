@@ -552,6 +552,7 @@ class JavaCodeGenerator : public CodeGenerator {
             } else if(type == DFT_STRUCTURE){
                 ofstream ofs(path + "/" + name + ".java");
                 ofs << "import java.io.*;" << endl;
+                ofs << "import info.chenliang.talky.*;" << endl;
                 ofs << "public class " << name << "{" << endl;
                 
                 Structure& theStructure = *dynamic_cast<Structure*>(definition);
@@ -624,6 +625,7 @@ class JavaCodeGenerator : public CodeGenerator {
                 // 1. proxy class
                 ofstream ofs(path + "/" + name + "Proxy" + ".java");
                 ofs << "import java.io.*;" << endl;
+                ofs << "import info.chenliang.talky.*;" << endl;
                 ofs << "public abstract class " + name + "Proxy {" << endl;
                 for(int i=0; i < theInterface.functions.size();i++){
                     ofs << "public abstract void "+ theInterface.functions[i]->name +"(" + getParamListString(theInterface.functions[i]) + ");"	<< endl;
@@ -635,6 +637,7 @@ class JavaCodeGenerator : public CodeGenerator {
                 // 2. stub
                 ofs.open(path + "/" + name + "Stub" + ".java");
                 ofs << "import java.io.*;" << endl;
+                ofs << "import info.chenliang.talky.*;" << endl;
                 ofs << "public abstract class " + name + "Stub {" << endl;
 				ofs << "protected abstract DataOutputStream begin();" << endl;
 				ofs << "protected abstract void end();" << endl;
@@ -655,6 +658,7 @@ class JavaCodeGenerator : public CodeGenerator {
                 // 3. dispatcher
                 ofs.open(path + "/" + name + "Dispatcher" + ".java");
                 ofs << "import java.io.*;" << endl;
+                ofs << "import info.chenliang.talky.*;" << endl;
                 ofs << "public class " + name + "Dispatcher {" << endl;
                 // 1. dispatcher method
                 ofs << "public static void dispatch(DataInputStream dis, "+name+"Proxy proxy) throws Exception{" << endl;
