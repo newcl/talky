@@ -967,15 +967,16 @@ case 23:
 YY_RULE_SETUP
 #line 130 "talky.l"
 {
+					yylval = std::string( yytext, yyleng );
 					return yytext[0];
 				}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 134 "talky.l"
+#line 135 "talky.l"
 ECHO;
 	YY_BREAK
-#line 979 "lex.yy.c"
+#line 980 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1972,7 +1973,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 134 "talky.l"
+#line 135 "talky.l"
 
 
 /* part 3 code */

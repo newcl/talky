@@ -1791,30 +1791,4 @@ yyreturn:
 
 #line 204 "talky.y"
 
-void init();
 
-int main(int argc, char** argv){
-	init();
-
-	FILE* talky_flex_input_file = fopen(argv[1], "r");
-	if(!talky_flex_input_file){
-		cout << "no input found " << argv[1] << endl;
-		return -1;
-	}
-	cout << "parsing " << argv[1] << endl;
-	yyin = talky_flex_input_file;
-
-	do{
-		yyparse();
-	}while(!feof(yyin));
-
-	CodeGenerator* cg = new JavaCodeGenerator();
-	cg->generate(Parser::getInstance().definitions, "/Users/chenliang/tmp");
-
-	//yylex();
-}
-
-void yyerror(const char* s){
-	cerr << "parse error " << std::string(s) << endl;
-	//exit(-1);
-}

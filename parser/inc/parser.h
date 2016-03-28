@@ -11,6 +11,10 @@
 #include <sstream>
 using namespace std;
 
+extern "C" {
+	int yyparse ();
+}
+
 inline void _assert(int v){
     
 }
@@ -531,9 +535,9 @@ class JavaCodeGenerator : public CodeGenerator {
                 
                 ofs << "}" << endl;
                 
-                ofs << "public static String toValue(String name){" << endl;
+                ofs << "public static int toValue(String name){" << endl;
                 for(int i=0; i < theEnum.members.size();i++){
-                    ofs << "if(value.equals(\"" << theEnum.members[i] << "\")){" << endl;
+                    ofs << "if(name.equals(\"" << theEnum.members[i] << "\")){" << endl;
                     ofs << "return " << theEnum.members[i] << ";" << endl;
                     ofs << "}" << endl;
                 }
@@ -547,6 +551,7 @@ class JavaCodeGenerator : public CodeGenerator {
             	ofs.close();
             } else if(type == DFT_STRUCTURE){
                 ofstream ofs(path + "/" + name + ".java");
+                ofs << "import java.io.*;" << endl;
                 ofs << "public class " << name << "{" << endl;
                 
                 Structure& theStructure = *dynamic_cast<Structure*>(definition);
@@ -558,7 +563,7 @@ class JavaCodeGenerator : public CodeGenerator {
                 }
                 
                 //serializer
-                ofs << "public void serialize(DataOutputStream dos){" << endl;
+                ofs << "public void serialize(DataOutputStream dos) throws Exception{" << endl;
                 
                 //mark fields that need serialization
                 int fieldMarkSize = (fields.size()+7)/8;
@@ -597,11 +602,11 @@ class JavaCodeGenerator : public CodeGenerator {
                     ofs << "}" << endl;		
                 }	 
                 
-                ofs << "}" << endl;
+                // ofs << "}" << endl;
                 ofs << "}" << endl;			
 
                 //deserializer
-                ofs << "public void serialize(DataInputStream dis){" << endl;
+                ofs << "public void deserialize(DataInputStream dis) throws Exception{" << endl;
 				ofs << "FieldMark fm = new FieldMark(" << fieldMarkSize << ");" << endl;
 				ofs << "dis.read(fm.getData());" << endl;
 				for(int i=0; i < fields.size(); i++){
@@ -618,6 +623,7 @@ class JavaCodeGenerator : public CodeGenerator {
                 Interface& theInterface = *dynamic_cast<Interface*>(definition);
                 // 1. proxy class
                 ofstream ofs(path + "/" + name + "Proxy" + ".java");
+                ofs << "import java.io.*;" << endl;
                 ofs << "public abstract class " + name + "Proxy {" << endl;
                 for(int i=0; i < theInterface.functions.size();i++){
                     ofs << "public abstract void "+ theInterface.functions[i]->name +"(" + getParamListString(theInterface.functions[i]) + ");"	<< endl;
@@ -628,10 +634,14 @@ class JavaCodeGenerator : public CodeGenerator {
 
                 // 2. stub
                 ofs.open(path + "/" + name + "Stub" + ".java");
+                ofs << "import java.io.*;" << endl;
                 ofs << "public abstract class " + name + "Stub {" << endl;
+				ofs << "protected abstract DataOutputStream begin();" << endl;
+				ofs << "protected abstract void end();" << endl;
+
                 for(int i=0; i < theInterface.functions.size();i++){
-                    ofs << "public void "+ theInterface.functions[i]->name +"(" + getParamListString(theInterface.functions[i]) + "){" << endl;	
-					ofs << "DataOutputSteam dos = begin();" << endl;
+                    ofs << "public void "+ theInterface.functions[i]->name +"(" + getParamListString(theInterface.functions[i]) + ") throws Exception{" << endl;	
+					ofs << "DataOutputStream dos = begin();" << endl;
                     for(int i=0;i < theInterface.functions[i]->params.size();i++){
                     	serializeField(ofs, *(theInterface.functions[i]->params[i]));
                     }
@@ -644,8 +654,8 @@ class JavaCodeGenerator : public CodeGenerator {
 
                 // 3. dispatcher
                 ofs.open(path + "/" + name + "Dispatcher" + ".java");
+                ofs << "import java.io.*;" << endl;
                 ofs << "public class " + name + "Dispatcher {" << endl;
-
                 // 1. dispatcher method
                 ofs << "public static void dispatch(DataInputStream dis, "+name+"Proxy proxy) throws Exception{" << endl;
 				ofs << "int fid = (int)(dis.read()&0xFFFF);"<<endl;

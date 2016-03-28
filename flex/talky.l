@@ -128,6 +128,7 @@ bytes			{
 					Parser::getInstance().onNewLine();
 				}
 .				{
+					yylval = std::string( yytext, yyleng );
 					return yytext[0];
 				}
 
