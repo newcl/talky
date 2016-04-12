@@ -1,7 +1,6 @@
 package test;
 
 import info.chenliang.talky.SerializationUtil;
-import junit.framework.TestCase;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -13,10 +12,12 @@ import java.io.DataOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Created by chenliang on 16/3/28.
  */
-public class SerializationUtilTest extends TestCase {
+public class SerializationUtilTest {
 
     @Rule
     public ExpectedException exception = ExpectedException.none();

@@ -1,13 +1,12 @@
 package test;
 
 import info.chenliang.talky.FieldMark;
-import junit.framework.TestCase;
 import org.junit.Test;
 
 /**
  * Created by chenliang on 16/3/28.
  */
-public class FieldMarkTest extends TestCase{
+public class FieldMarkTest{
 
     @Test
     public void testfiledMark(){
