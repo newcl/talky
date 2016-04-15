@@ -707,7 +707,7 @@ class JavaCodeGenerator : public CodeGenerator {
             exit(-1);
         }
 
-        dir = canonical(dir);
+        dir = fs::canonical(dir);
         path = dir.native();
 
         cout << "generating java source to:" << path << endl;
