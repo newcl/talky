@@ -1,10 +1,8 @@
 language: java
 script:
   - gradle -b lang/java/build.gradle check
-    - sh run.sh
-	  - gradle -b demo/java/build.gradle check
-	  sudo: false
-	  install:
-	    - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
-
-
+  - sh run.sh
+	- gradle -b demo/java/build.gradle check
+sudo: false
+install:
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
