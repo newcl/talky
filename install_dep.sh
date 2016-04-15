@@ -7,4 +7,3 @@
 
 # boost takes too long to download compile & install
 
-sudo apt-get install libboost1.54-dev
