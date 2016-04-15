@@ -1,8 +1,12 @@
 language: java
 script:
-  - gradle -b lang/java/build.gradle check
-  - sh run.sh
-  - gradle -b demo/java/build.gradle check
-sudo: false
+- gradle -b lang/java/build.gradle check
+- sh run.sh
+- gradle -b demo/java/build.gradle check
+before_install:
+- sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+- sudo apt-get update -qq
+
 install:
-  - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+- sudo apt-get install -qq g++-4.8
+- export CXX="g++-4.8"
