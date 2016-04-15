@@ -1,6 +1,7 @@
 language: java
 script:
 - gradle -b lang/java/build.gradle check
+- sh install_dep.sh
 - sh run.sh
 - gradle -b demo/java/build.gradle check
 before_install:
