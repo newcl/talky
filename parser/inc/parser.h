@@ -9,7 +9,14 @@
 #include <istream>
 #include <ostream>
 #include <sstream>
+#include <boost/program_options.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/algorithm/string/replace.hpp>
+
 using namespace std;
+
+namespace po = boost::program_options;
+namespace fs = boost::filesystem;
 
 extern "C" {
 	int yyparse ();
@@ -166,23 +173,23 @@ public:
     std::vector<Function*> functions;
 };
 
-class Parser{
+class TalkyUnit{
 public:
-    static Parser& getInstance();
-    Parser():
+    TalkyUnit(FILE* file):
     currentDefinition(NULL),
     userTypeDefinition(NULL),
-    lineNumber(0){
-        
+    file(file),
+    currentPackage("")
+    {
     }
-    
+
     void onNewEnum(const std::string name){
-        cout << "new enum " << name << endl;
+        //cout << "new enum " << name << endl;
         currentDefinition = new Enum(name);
         definitions[name] = currentDefinition;
     }
     void onEnumMember(const std::string name){
-        cout << "new enum member " << name << endl;
+        // cout << "new enum member " << name << endl;
         Enum* theEnum = dynamic_cast<Enum*> (currentDefinition);
         theEnum->onNewMember(name);
     }
@@ -190,27 +197,27 @@ public:
         currentDefinition->onDone();
     }
     void onNewStructure(const std::string name){
-        cout << "new structure " << name << endl;
+        // cout << "new structure " << name << endl;
         currentDefinition = new Structure(name);
         definitions[name] = currentDefinition;
     }
     void onStructureMember(const std::string name){
-        cout << "new structure member " << name << endl;
+        // cout << "new structure member " << name << endl;
         TypeDeclaration* td = new TypeDeclaration(currentDeclarationType, currentDataType, name, userTypeDefinition);
         Structure* theStructure = dynamic_cast<Structure*> (currentDefinition);
         theStructure->onNewMember(td);
     }
     void onStructureDone(const std::string name){
-        cout << "new structure done" << name << endl;
+        // cout << "new structure done" << name << endl;
         currentDefinition->onDone();
     }
     void onNewInterface(const std::string name){
-        cout << "new interface " << name << endl;
+        // cout << "new interface " << name << endl;
         currentDefinition = new Interface(name);
         definitions[name] = currentDefinition;
     }
     void onMemberFunction(const std::string name){
-        cout << "new member function " << name << endl;
+        // cout << "new member function " << name << endl;
         Interface* theInterface = dynamic_cast<Interface*> (currentDefinition);
         Function& function = *theInterface->onMemberFunction(name);
         for(int i=0; i < currentFunctionParams.size();i++){
@@ -219,19 +226,22 @@ public:
         
         currentFunctionParams.clear();
     }
+    void onPackage(const std::string packageName){
+        currentPackage = packageName;
+    }
     void onFunctionParam(const std::string paramName){
         Interface* theInterface = dynamic_cast<Interface*> (currentDefinition);
         //Function& function = *theInterface->getFunction(currentFunction);
         TypeDeclaration* td = new TypeDeclaration(currentDeclarationType, currentDataType, paramName, userTypeDefinition);
         currentFunctionParams.push_back(td);
         //function.addParam(td);
-        cout << "new function param " << paramName << endl;
+        // cout << "new function param " << paramName << endl;
     }
     void onNewInterfaceDone(const std::string interfaceName){
-        cout << "new interface done" << interfaceName << endl;
+        // cout << "new interface done" << interfaceName << endl;
     }
     void onDataType(DataType dataType){
-        cout << "data type " << dataType << endl;
+        // cout << "data type " << dataType << endl;
         currentDeclarationType = DLT_PRIMITIVE;
         currentDataType = dataType;
     }
@@ -264,7 +274,7 @@ public:
         }
         return NULL;
     }
-    
+
     DeclarationType currentDeclarationType;
     Definition* currentDefinition;
     std::string currentFile;
@@ -273,13 +283,184 @@ public:
     Definition* userTypeDefinition;
     string currentFunction;
     vector<TypeDeclaration*> currentFunctionParams;
+    string currentPackage;
+    FILE* file;
+};
+
+class Parser{
+public:
+    static Parser& getInstance();
+    Parser():
+    lineNumber(0){
+        
+    }
+
+    void onTalkyUnitParsed(TalkyUnit* unit){
+        parsedTalkyUnits.push_back(unit);
+    }
+
+    TalkyUnit* takeTalkyUnit(){
+        TalkyUnit* unit = parseHistory.back();
+        parseHistory.pop_back();
+        return unit;
+    }
+
+    bool hasMoreTalkyUnits(){
+        return parseHistory.size() > 0;
+    }
+
+    void parse(string filePath){
+        currentUnit = assembleTalkyUnit(filePath);
+        parseHistory.push_back(currentUnit);
+    }
+
+    TalkyUnit* assembleTalkyUnit(string filePath){
+        FILE* talkyFile = fopen(filePath.c_str(), "r");
+        if (!talkyFile)
+        {
+            cout << "talky file does not exist:" << filePath << endl;
+            exit(-1);
+        }
+        return new TalkyUnit(talkyFile);
+    }
+    
+    void onNewEnum(const std::string name){
+        // cout << "new enum " << name << endl;
+        // currentDefinition = new Enum(name);
+        // definitions[name] = currentDefinition;
+        currentUnit->onNewEnum(name);
+    }
+    void onEnumMember(const std::string name){
+        // cout << "new enum member " << name << endl;
+        // Enum* theEnum = dynamic_cast<Enum*> (currentDefinition);
+        // theEnum->onNewMember(name);
+        currentUnit->onEnumMember(name);
+    }
+    void onEnumDone(string name){
+        // currentDefinition->onDone();
+        currentUnit->onEnumDone(name);
+    }
+    void onNewStructure(const std::string name){
+        // cout << "new structure " << name << endl;
+        // currentDefinition = new Structure(name);
+        // definitions[name] = currentDefinition;
+        currentUnit->onNewStructure(name);
+    }
+    void onStructureMember(const std::string name){
+        // cout << "new structure member " << name << endl;
+        // TypeDeclaration* td = new TypeDeclaration(currentDeclarationType, currentDataType, name, userTypeDefinition);
+        // Structure* theStructure = dynamic_cast<Structure*> (currentDefinition);
+        // theStructure->onNewMember(td);
+        currentUnit->onStructureMember(name);
+    }
+    void onStructureDone(const std::string name){
+        // cout << "new structure done" << name << endl;
+        // currentDefinition->onDone();
+        currentUnit->onStructureDone(name);
+    }
+    void onNewInterface(const std::string name){
+        // cout << "new interface " << name << endl;
+        // currentDefinition = new Interface(name);
+        // definitions[name] = currentDefinition;
+        currentUnit->onNewInterface(name);
+    }
+    void onMemberFunction(const std::string name){
+        // cout << "new member function " << name << endl;
+        // Interface* theInterface = dynamic_cast<Interface*> (currentDefinition);
+        // Function& function = *theInterface->onMemberFunction(name);
+        // for(int i=0; i < currentFunctionParams.size();i++){
+        //     function.addParam(currentFunctionParams[i]);
+        // }
+        
+        // currentFunctionParams.clear();
+        currentUnit->onMemberFunction(name);
+    }
+    void onPackage(const std::string packageName){
+        // currentPackage = packageName;
+        cout << "onPackage" << packageName << endl;
+        currentUnit->onPackage(packageName);
+    }
+    void onFunctionParam(const std::string paramName){
+        // Interface* theInterface = dynamic_cast<Interface*> (currentDefinition);
+        // //Function& function = *theInterface->getFunction(currentFunction);
+        // TypeDeclaration* td = new TypeDeclaration(currentDeclarationType, currentDataType, paramName, userTypeDefinition);
+        // currentFunctionParams.push_back(td);
+        // //function.addParam(td);
+        // cout << "new function param " << paramName << endl;
+
+        currentUnit->onFunctionParam(paramName);
+    }
+    void onNewInterfaceDone(const std::string interfaceName){
+        // cout << "new interface done" << interfaceName << endl;
+        currentUnit->onNewInterfaceDone(interfaceName);
+    }
+    void onDataType(DataType dataType){
+        // cout << "data type " << dataType << endl;
+        // currentDeclarationType = DLT_PRIMITIVE;
+        // currentDataType = dataType;
+
+        currentUnit->onDataType(dataType);
+    }
+    void onNewLine(){
+        currentUnit->onNewLine();
+    }
+    void onImport(string importFile){
+        // currentUnit->onImport(importFile);
+        parseHistory.push_back(currentUnit);
+
+        currentUnit = assembleTalkyUnit(importFile);
+        parseHistory.push_back(currentUnit);        
+        //stop the current yyparse execution and get into the next one
+    }
+    void onUserDataType(string name){
+        // Definition* definition = getDefinition(name);
+        // currentDeclarationType = DLT_USER;
+        // userTypeDefinition = definition;
+        currentUnit->onUserDataType(name);
+    }
+    void onNewUserArray(string name){
+        // Definition* definition = getDefinition(name);
+        // currentDeclarationType = DLT_ARRAY;
+        // userTypeDefinition = definition;
+        currentUnit->onNewUserArray(name);
+    }
+    void onNewPrimitiveArray(string name){
+        // DataType dataType = stringToDataType(name);
+        // currentDeclarationType = DLT_ARRAY;
+        // currentDataType = dataType;
+        // userTypeDefinition = NULL;
+
+        currentUnit->onNewPrimitiveArray(name);        
+    }
+    void onNewByteArray(){}
+    Definition* getDefinition(const std::string name){
+        // if(definitions.count(name)){
+        //     return definitions[name];
+        // }
+        // return NULL;
+        return currentUnit->getDefinition(name);
+    }
+    
+    // DeclarationType currentDeclarationType;
+    // Definition* currentDefinition;
+    // std::string currentFile;
+    // DataType currentDataType;
+    // map<string, Definition*> definitions;
+    // Definition* userTypeDefinition;
+    // string currentFunction;
+    // vector<TypeDeclaration*> currentFunctionParams;
+    // string currentPackage("");
+
+    TalkyUnit* currentUnit;
+    vector<TalkyUnit*> parseHistory;
+    vector<TalkyUnit*> parsedTalkyUnits;
     int lineNumber;
     
 };
 
 class CodeGenerator {
 public:
-    virtual void generate(map<string, Definition*>& definitions, string path){}
+    virtual void generate(TalkyUnit* unit, string path) = 0;
 };
 
 class JavaCodeGenerator : public CodeGenerator {
@@ -340,7 +521,7 @@ class JavaCodeGenerator : public CodeGenerator {
     
     void serializeField(ofstream& ofs, TypeDeclaration& theField){
         if(theField.declarationType == DLT_ARRAY){
-            ofs << "SerializeUtil.writeVariableLength(dos, " + theField.name + ".length);" << endl;
+            ofs << "SerializationUtil.writeVariableLength(dos, " + theField.name + ".length);" << endl;
             if(theField.userTypeDefinition == NULL){
                 
                 ofs << "for(int i=0; i < "+theField.name+".length;i++){" << endl;
@@ -400,7 +581,7 @@ class JavaCodeGenerator : public CodeGenerator {
                         else if(theField.dataType == DT_STRING)
                             ofs << "dos.writeUTF("+theField.name+");" << endl;
                     }else if(theField.declarationType == DLT_BYTE_ARRAY){
-                        ofs << "SerializeUtil.writeVariableLength(dos, " + theField.name + ".length);" << endl;
+                        ofs << "SerializationUtil.writeVariableLength(dos, " + theField.name + ".length);" << endl;
                         ofs << "dos.write(" + theField.name + ");" << endl;
                     }
     }
@@ -414,7 +595,7 @@ class JavaCodeGenerator : public CodeGenerator {
 
         if(theField.declarationType == DLT_ARRAY){
         	string arrayLength = nextParamName();
-            ofs << "int " + arrayLength + " = SerializeUtil.readVariableLength(dis);" << endl;
+            ofs << "int " + arrayLength + " = SerializationUtil.readVariableLength(dis);" << endl;
             if(theField.userTypeDefinition == NULL){
             	ofs << theField.name + " = new " + getPrimitiveTypeName(theField.dataType) + "["+arrayLength+"];" << endl;
                 ofs << "for(int i=0; i < "+arrayLength+";i++){" << endl;
@@ -443,12 +624,15 @@ class JavaCodeGenerator : public CodeGenerator {
                 
                 ofs << "}" << endl;
             }else{
+                ofs << theField.name + " = new " + theField.userTypeDefinition->name + "["+arrayLength+"];" << endl;
                 ofs << "for(int i=0; i < "+theField.name+".length;i++){" << endl;
+                ofs << theField.name + "[i] = new " << theField.userTypeDefinition->name << "();" << endl;
                 ofs << theField.name + "[i].deserialize(dis);" << endl;
                 ofs << "}" << endl;
             }
             
 	    			} else if(theField.declarationType == DLT_USER){
+                        ofs << theField.name + " = new " << theField.userTypeDefinition->name << "();" << endl;
                         ofs << theField.name + ".deserialize(dis);" << endl;
                     } else if(theField.declarationType == DLT_PRIMITIVE){
                         if(theField.dataType == DT_INT64)
@@ -475,7 +659,7 @@ class JavaCodeGenerator : public CodeGenerator {
 		                    ofs << theField.name + " = dis.readUTF();" << endl;
                     }else if(theField.declarationType == DLT_BYTE_ARRAY){
                     	string arrayLength = nextParamName();
-            			ofs << "int " + arrayLength + " = SerializeUtil.readVariableLength(dis);" << endl;
+            			ofs << "int " + arrayLength + " = SerializationUtil.readVariableLength(dis);" << endl;
             			ofs << theField.name + " = new byte["+arrayLength+"];";
                         ofs << "dos.read(" + theField.name + ");" << endl;
                     }
@@ -507,7 +691,28 @@ class JavaCodeGenerator : public CodeGenerator {
         return ss.str();
     }
     
-    void generate(map<string, Definition*>& definitions, string path){
+    void generate(TalkyUnit* unit, string path){
+        fs::path dir(path);
+        //package
+        if(unit->currentPackage != ""){
+            string packagePath = unit->currentPackage;
+            // std::replace(packagePath.begin(), packagePath.end(), ".", "/");
+            boost::replace_all(packagePath, ".", "/");
+            dir += "/" + packagePath;
+            cout << "final path:" << dir << endl; 
+            boost::filesystem::create_directories(dir);
+        }
+        if(!fs::exists(dir)){
+            cout << "java generator output dir does not exist:" << dir << endl;
+            exit(-1);
+        }
+
+        dir = canonical(dir);
+        path = dir.native();
+
+        cout << "generating java source to:" << path << endl;
+
+        map<string, Definition*>& definitions = unit->definitions;
         
         for( map<string, Definition*>::iterator it = definitions.begin(); it != definitions.end(); ++it ) {
             Definition* definition = it->second;
@@ -515,6 +720,9 @@ class JavaCodeGenerator : public CodeGenerator {
             DefinitionType type = definition->getType();
             if(type == DFT_ENUM){
                 ofstream ofs(path + "/" + name + ".java");
+                if(unit->currentPackage != ""){
+                    ofs << "package " << unit->currentPackage << ";" << endl;
+                }
                 ofs << "public class " << name << "{" << endl;
                 
                 Enum& theEnum = *dynamic_cast<Enum*>(definition);
@@ -546,11 +754,12 @@ class JavaCodeGenerator : public CodeGenerator {
                 ofs << "}" << endl;
                 
                 ofs << "}" << endl;
-
-                ofs << "}" << endl;			
             	ofs.close();
             } else if(type == DFT_STRUCTURE){
                 ofstream ofs(path + "/" + name + ".java");
+                if(unit->currentPackage != ""){
+                    ofs << "package " << unit->currentPackage << ";" << endl;
+                }
                 ofs << "import java.io.*;" << endl;
                 ofs << "import info.chenliang.talky.*;" << endl;
                 ofs << "public class " << name << "{" << endl;
@@ -574,7 +783,7 @@ class JavaCodeGenerator : public CodeGenerator {
                     if(theField.declarationType == DLT_ARRAY
                        ||theField.declarationType == DLT_BYTE_ARRAY){
                         //fm.mark(name == null || name.length == 0 ? false : true);
-                        ofs << "fm.mark(" << theField.name << " == null || "<< theField.name << ".length == 0 ? false : true);" << endl;
+                        ofs << "fm.mark(" << theField.name << " != null && "<< theField.name << ".length > 0);" << endl;
                     } else if(theField.declarationType == DLT_USER){
                         ofs << "fm.mark(true);" << endl;
                     } else if(theField.declarationType == DLT_PRIMITIVE){
@@ -587,14 +796,16 @@ class JavaCodeGenerator : public CodeGenerator {
                            ||theField.dataType == DT_INT16 
                            ||theField.dataType == DT_UINT16 
                            ||theField.dataType == DT_INT8){
-                            ofs << "fm.mark(" << theField.name << " == 0);" << endl;
+                            ofs << "fm.mark(" << theField.name << " != 0);" << endl;
                         }else if(theField.dataType == DT_BOOL){
                             ofs << "fm.mark(true);" << endl;
                         }else if(theField.dataType == DT_STRING){
-                            ofs << "fm.mark(" << theField.name << " == null || "<< theField.name << ".length == 0 ? false : true);" << endl;
+                            ofs << "fm.mark(" << theField.name << " != null && "<< theField.name << ".length() > 0);" << endl;
                         }
                     }
                 }	    		
+                // serialize the field mark
+                ofs << "dos.write(fm.getData());" << endl;     
                 //actual serilization code
                 for(int i=0; i < fields.size(); i++){
                     TypeDeclaration& theField = *fields[i];
@@ -624,6 +835,9 @@ class JavaCodeGenerator : public CodeGenerator {
                 Interface& theInterface = *dynamic_cast<Interface*>(definition);
                 // 1. proxy class
                 ofstream ofs(path + "/" + name + "Proxy" + ".java");
+                if(unit->currentPackage != ""){
+                    ofs << "package " << unit->currentPackage << ";" << endl;
+                }
                 ofs << "import java.io.*;" << endl;
                 ofs << "import info.chenliang.talky.*;" << endl;
                 ofs << "public abstract class " + name + "Proxy {" << endl;
@@ -636,6 +850,9 @@ class JavaCodeGenerator : public CodeGenerator {
 
                 // 2. stub
                 ofs.open(path + "/" + name + "Stub" + ".java");
+                if(unit->currentPackage != ""){
+                    ofs << "package " << unit->currentPackage << ";" << endl;
+                }
                 ofs << "import java.io.*;" << endl;
                 ofs << "import info.chenliang.talky.*;" << endl;
                 ofs << "public abstract class " + name + "Stub {" << endl;
@@ -645,8 +862,8 @@ class JavaCodeGenerator : public CodeGenerator {
                 for(int i=0; i < theInterface.functions.size();i++){
                     ofs << "public void "+ theInterface.functions[i]->name +"(" + getParamListString(theInterface.functions[i]) + ") throws Exception{" << endl;	
 					ofs << "DataOutputStream dos = begin();" << endl;
-                    for(int i=0;i < theInterface.functions[i]->params.size();i++){
-                    	serializeField(ofs, *(theInterface.functions[i]->params[i]));
+                    for(int j=0;j < theInterface.functions[i]->params.size();j++){
+                    	serializeField(ofs, *(theInterface.functions[i]->params[j]));
                     }
 
                     ofs << "end();" << endl;
@@ -657,6 +874,9 @@ class JavaCodeGenerator : public CodeGenerator {
 
                 // 3. dispatcher
                 ofs.open(path + "/" + name + "Dispatcher" + ".java");
+                if(unit->currentPackage != ""){
+                    ofs << "package " << unit->currentPackage << ";" << endl;
+                }
                 ofs << "import java.io.*;" << endl;
                 ofs << "import info.chenliang.talky.*;" << endl;
                 ofs << "public class " + name + "Dispatcher {" << endl;
@@ -673,7 +893,7 @@ class JavaCodeGenerator : public CodeGenerator {
 					ofs << "break;" << endl;
                 }
 				ofs << "}" << endl; // switch
-				ofs << "}" << endl; // dispatcher
+				ofs << "}" << endl; // dispatch method
                 // 2. deserialize param and call proxy
                 for(int i=0; i < theInterface.functions.size();i++){
                 	ofs << "protected static void "+theInterface.functions[i]->name+"(DataInputStream dis, "+name+"Proxy proxy) throws Exception{" << endl;
@@ -691,8 +911,6 @@ class JavaCodeGenerator : public CodeGenerator {
                 	ofs << "}" << endl;
                 }
                 ofs << "}" << endl;			
-
-                ofs << "}" << endl;			
             	ofs.close();
             	
             }
@@ -703,5 +921,7 @@ class JavaCodeGenerator : public CodeGenerator {
         
     }
 };
+
+
 
 #endif

@@ -6,6 +6,8 @@ kill a player, you get some points, and there are all kinds of magical items,
 say item to speed up and item to freeze other player and item to gain hp, etc, etc.
 */
 
+package info.chenliang.tank;
+
 enum PlayerType 
 {
 	PT_AI,

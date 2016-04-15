@@ -12,6 +12,7 @@ using namespace std;
 
 /* disable name mangling for g++ */
 #define YY_DECL extern "C" int yylex()
+//#define YYDEBUG 1
 %}
 
 NEWLINE					[\r?\n]
@@ -27,6 +28,11 @@ struct			{
 
 interface		{
 					return TOKEN_INTERFACE;
+				}
+
+package 		{
+					yylval = std::string( yytext, yyleng );
+					return TOKEN_PACKAGE;
 				}
 
 int64			{
@@ -101,6 +107,10 @@ bytes			{
 					yylval = std::string( yytext, yyleng );
 					return TOKEN_IDENTIFIER;
 				}
+[a-ij-rs-zA-IJ-RS-Z_\.][a-ij-rs-zA-IJ-RS-Z0-9_\.]* {
+					yylval = std::string( yytext, yyleng );
+					return TOKEN_IDENTIFIER_PACKAGE;
+				}
 [ \t]*
 				{
 
@@ -129,6 +139,7 @@ bytes			{
 				}
 .				{
 					yylval = std::string( yytext, yyleng );
+					// cout << "---->" << yytext << "<-----" << endl;
 					return yytext[0];
 				}
 

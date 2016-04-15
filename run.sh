@@ -1,2 +1,2 @@
 sh build.sh
-./talky ./demo/demo.talky
+./talky --file ./demo/demo.talky --lang java --output demo/java/src/main/java

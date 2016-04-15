@@ -1,13 +1,16 @@
+package info.chenliang.tank;
 import java.io.*;
+import info.chenliang.talky.*;
 public class Point3d{
 public float x;
 public float y;
 public float z;
 public void serialize(DataOutputStream dos) throws Exception{
 FieldMark fm = new FieldMark(1);
-fm.mark(x == 0);
-fm.mark(y == 0);
-fm.mark(z == 0);
+fm.mark(x != 0);
+fm.mark(y != 0);
+fm.mark(z != 0);
+dos.write(fm.getData());
 if(fm.isMarked(0)){
 dos.writeFloat(x);
 }

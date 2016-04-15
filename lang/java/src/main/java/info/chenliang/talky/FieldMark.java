@@ -33,4 +33,8 @@ public class FieldMark {
         boolean isMarked = isMarked(readIndex++);
         return isMarked;
     }
+
+    public byte[] getData(){
+        return data;
+    }
 }

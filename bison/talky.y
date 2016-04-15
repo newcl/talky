@@ -11,9 +11,9 @@ extern "C" FILE* yyin;
 void yyerror(const char* s);
 
 #define YYSTYPE std::string
-
+//#define YYDEBUG 1
 %}
-
+%error-verbose
 %token				TOKEN_IDENTIFIER
 %token				TOKEN_ENUM
 %token				TOKEN_STRUCT
@@ -33,9 +33,13 @@ void yyerror(const char* s);
 %token				TOKEN_ARRAY
 %token				TOKEN_BYTES
 %token				TOKEN_UINTEGER_LITERAL
+%token				TOKEN_PACKAGE
+%token				TOKEN_IDENTIFIER_PACKAGE
+
+
 
 %%
-talky: definitions;
+talky: package definitions | definitions;
 definitions:
 	definitions definition
 	|
@@ -48,7 +52,7 @@ enumeration:
 	TOKEN_ENUM
 	TOKEN_IDENTIFIER
 	{
-		cout << "enum definition found " << $2 << endl ;
+		//cout << "enum definition found " << $2 << endl ;
 		Parser::getInstance().onNewEnum($2);
 	}
 	'{' enumeration_body '}'
@@ -77,6 +81,14 @@ structure:
 	}
 	'{' structure_body '}'
 	{
+	}
+	;
+
+package:
+	TOKEN_PACKAGE TOKEN_IDENTIFIER_PACKAGE ';'
+	{
+		Parser::getInstance().onPackage($2);
+		//YYACCEPT
 	}
 	;
 

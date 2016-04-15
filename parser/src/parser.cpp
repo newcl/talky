@@ -40,20 +40,98 @@ DataType stringToDataType(string name){
 int main(int argc, char** argv){
 	init();
 
-	FILE* talky_flex_input_file = fopen(argv[1], "r");
-	if(!talky_flex_input_file){
-		cout << "no input found " << argv[1] << endl;
-		return -1;
+	po::options_description desc("Valid Options:");
+	desc.add_options()
+		("help", "help info")
+		("file", po::value<std::string>(), "specify talky definition file")
+		("output", po::value<std::string>(), "specify output directory")
+		("lang", po::value<std::string>(), "specify output language");
+
+	po::variables_map vm;
+	po::store(po::parse_command_line(argc, argv, desc), vm);
+	po::notify(vm);
+
+	if(vm.count("help")){
+		cout << desc << endl;
+		return 0;
 	}
-	cout << "parsing " << argv[1] << endl;
-	yyin = talky_flex_input_file;
 
+	string talkyFile;
+	if(vm.count("file")){
+		talkyFile = vm["file"].as<std::string>();
+		cout << "talky:" << talkyFile << endl;
+	}else{
+		cout << "need to specify talky definition file" << endl;
+		return 1;
+	}
+	string outputPath;
+	if(vm.count("output")){
+		outputPath = vm["output"].as<std::string>();
+		cout << "outputPath:" << outputPath << endl;
+	}else{
+		cout << "need to specify outputPath" << endl;
+		return 1;
+	}
+
+	fs::path dir(outputPath);
+	if(fs::is_regular_file(dir)){
+		cout << "output path is a file:" << outputPath << endl;
+		return 1;
+	}
+	// not exist create
+	if(!fs::exists(dir)){
+		if(boost::filesystem::create_directories(dir)) {
+			//std::cout << "Success" << "\n";
+		}else{
+
+		}
+	}
+	
+
+	// should exist and is a directory
+	if(!fs::exists(dir) || !fs::is_directory(dir)){
+		cout << "output path invalid:" << outputPath << endl;
+		return 1;
+	}
+
+	// FILE* talky_flex_input_file = fopen(talkyFile.c_str(), "r");
+	// if(!talky_flex_input_file){
+	// 	cout << "no input found " << talkyFile << endl;
+	// 	return -1;
+	// }
+
+	Parser::getInstance().parse(talkyFile);
+	// TODO move to Parser::parse
 	do{
-		yyparse();
-	}while(!feof(yyin));
+		TalkyUnit* talkyUnit = Parser::getInstance().takeTalkyUnit();
+		yyin = talkyUnit->file;
+		do{
+			int code = yyparse();
+			if(code == 0){
+				/*
+				this can mean 2 things
+				1. move on to the next talky file by import
+				2. the current talky file is parsed successfully
+				 */
+				break;
+			}
+		}while(!feof(yyin));	
 
+		Parser::getInstance().onTalkyUnitParsed(talkyUnit);
+	}while(Parser::getInstance().hasMoreTalkyUnits());
+
+	dir = canonical(dir);
+	string absolutePath = dir.native();
 	CodeGenerator* cg = new JavaCodeGenerator();
-	cg->generate(Parser::getInstance().definitions, "/Users/chenliang/git_projects/talky/demo/java");
+
+	for(int i=0; i < Parser::getInstance().parsedTalkyUnits.size();i++){
+		TalkyUnit* unit = Parser::getInstance().parsedTalkyUnits[i];
+		cg->generate(unit, absolutePath);
+	}
+
+	// all the parsing is done, write language bindings
+	
+	
 }
 
 void yyerror(const char* s){
