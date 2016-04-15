@@ -22,7 +22,7 @@ repositories {
 }
 
 version = "0.1"
-jarName = "talky-base"
+def jarName = "talky-base"
 
 task myjar(type: Jar) {
     manifest {
