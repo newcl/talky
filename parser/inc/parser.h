@@ -19,7 +19,7 @@ namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 
 extern "C" {
-    int yyparse ();
+	int yyparse ();
 }
 
 inline void _assert(int v){
@@ -182,7 +182,7 @@ public:
     currentPackage("")
     {
     }
-    
+
     void onNewEnum(const std::string name){
         //cout << "new enum " << name << endl;
         currentDefinition = new Enum(name);
@@ -274,7 +274,7 @@ public:
         }
         return NULL;
     }
-    
+
     DeclarationType currentDeclarationType;
     Definition* currentDefinition;
     std::string currentFile;
@@ -294,26 +294,26 @@ public:
     lineNumber(0){
         
     }
-    
+
     void onTalkyUnitParsed(TalkyUnit* unit){
         parsedTalkyUnits.push_back(unit);
     }
-    
+
     TalkyUnit* takeTalkyUnit(){
         TalkyUnit* unit = parseHistory.back();
         parseHistory.pop_back();
         return unit;
     }
-    
+
     bool hasMoreTalkyUnits(){
         return parseHistory.size() > 0;
     }
-    
+
     void parse(string filePath){
         currentUnit = assembleTalkyUnit(filePath);
         parseHistory.push_back(currentUnit);
     }
-    
+
     TalkyUnit* assembleTalkyUnit(string filePath){
         FILE* talkyFile = fopen(filePath.c_str(), "r");
         if (!talkyFile)
@@ -387,7 +387,7 @@ public:
         // currentFunctionParams.push_back(td);
         // //function.addParam(td);
         // cout << "new function param " << paramName << endl;
-        
+
         currentUnit->onFunctionParam(paramName);
     }
     void onNewInterfaceDone(const std::string interfaceName){
@@ -398,7 +398,7 @@ public:
         // cout << "data type " << dataType << endl;
         // currentDeclarationType = DLT_PRIMITIVE;
         // currentDataType = dataType;
-        
+
         currentUnit->onDataType(dataType);
     }
     void onNewLine(){
@@ -407,9 +407,9 @@ public:
     void onImport(string importFile){
         // currentUnit->onImport(importFile);
         parseHistory.push_back(currentUnit);
-        
+
         currentUnit = assembleTalkyUnit(importFile);
-        parseHistory.push_back(currentUnit);
+        parseHistory.push_back(currentUnit);        
         //stop the current yyparse execution and get into the next one
     }
     void onUserDataType(string name){
@@ -429,8 +429,8 @@ public:
         // currentDeclarationType = DLT_ARRAY;
         // currentDataType = dataType;
         // userTypeDefinition = NULL;
-        
-        currentUnit->onNewPrimitiveArray(name);
+
+        currentUnit->onNewPrimitiveArray(name);        
     }
     void onNewByteArray(){}
     Definition* getDefinition(const std::string name){
@@ -450,7 +450,7 @@ public:
     // string currentFunction;
     // vector<TypeDeclaration*> currentFunctionParams;
     // string currentPackage("");
-    
+
     TalkyUnit* currentUnit;
     vector<TalkyUnit*> parseHistory;
     vector<TalkyUnit*> parsedTalkyUnits;
@@ -512,9 +512,9 @@ class JavaCodeGenerator : public CodeGenerator {
         
         return "unknown primitive type " + itoa(dataType);
     }
-    
+
     string itoa(int i){
-        ostringstream oss;
+		ostringstream oss;
         oss << i;
         return oss.str();
     }
@@ -585,19 +585,19 @@ class JavaCodeGenerator : public CodeGenerator {
                         ofs << "dos.write(" + theField.name + ");" << endl;
                     }
     }
-    
+
     string nextParamName(){
-        static int index = 0;
-        return "__" + itoa((index++)) + "__";
+    	static int index = 0;
+    	return "__" + itoa((index++)) + "__";
     }
-    
+
     void deserializeField(ofstream& ofs, TypeDeclaration& theField){
-        
+
         if(theField.declarationType == DLT_ARRAY){
-            string arrayLength = nextParamName();
+        	string arrayLength = nextParamName();
             ofs << "int " + arrayLength + " = SerializationUtil.readVariableLength(dis);" << endl;
             if(theField.userTypeDefinition == NULL){
-                ofs << theField.name + " = new " + getPrimitiveTypeName(theField.dataType) + "["+arrayLength+"];" << endl;
+            	ofs << theField.name + " = new " + getPrimitiveTypeName(theField.dataType) + "["+arrayLength+"];" << endl;
                 ofs << "for(int i=0; i < "+arrayLength+";i++){" << endl;
                 if(theField.dataType == DT_INT64)
                     ofs << theField.name + "[i] = dis.readLong();" << endl;
@@ -636,31 +636,31 @@ class JavaCodeGenerator : public CodeGenerator {
                         ofs << theField.name + ".deserialize(dis);" << endl;
                     } else if(theField.declarationType == DLT_PRIMITIVE){
                         if(theField.dataType == DT_INT64)
-                            ofs << theField.name + " = dis.readLong();" << endl;
-                        else if(theField.dataType == DT_UINT64)
-                            ofs << theField.name + " = dis.readLong();" << endl;
-                        else if (theField.dataType == DT_DOUBLE)
-                            ofs << theField.name + " = dis.readDouble();" << endl;
-                        else if (theField.dataType == DT_FLOAT)
-                            ofs << theField.name + " = dis.readFloat();" << endl;
-                        else if (theField.dataType == DT_INT32)
-                            ofs << theField.name + " = dis.readInt();" << endl;
-                        else if (theField.dataType == DT_UINT32)
-                            ofs << theField.name + " = dis.readInt();" << endl;
-                        else if (theField.dataType == DT_INT16)
-                            ofs << theField.name + " = dis.readShort();" << endl;
-                        else if (theField.dataType == DT_UINT16)
-                            ofs << theField.name + " = dis.readShort();" << endl;
-                        else if (theField.dataType == DT_INT8)
-                            ofs << theField.name + " = dis.readByte();" << endl;
-                        else if(theField.dataType == DT_BOOL)
-                            ofs << theField.name + " = dis.readBoolean();" << endl;
-                        else if(theField.dataType == DT_STRING)
-                            ofs << theField.name + " = dis.readUTF();" << endl;
+		                    ofs << theField.name + " = dis.readLong();" << endl;
+		                else if(theField.dataType == DT_UINT64)
+		                    ofs << theField.name + " = dis.readLong();" << endl;
+		                else if (theField.dataType == DT_DOUBLE)
+		                    ofs << theField.name + " = dis.readDouble();" << endl;
+		                else if (theField.dataType == DT_FLOAT)
+		                    ofs << theField.name + " = dis.readFloat();" << endl;
+		                else if (theField.dataType == DT_INT32)
+		                    ofs << theField.name + " = dis.readInt();" << endl;
+		                else if (theField.dataType == DT_UINT32)
+		                    ofs << theField.name + " = dis.readInt();" << endl;
+		                else if (theField.dataType == DT_INT16)
+		                    ofs << theField.name + " = dis.readShort();" << endl;
+		                else if (theField.dataType == DT_UINT16)
+		                    ofs << theField.name + " = dis.readShort();" << endl;
+		                else if (theField.dataType == DT_INT8)
+		                    ofs << theField.name + " = dis.readByte();" << endl;
+		                else if(theField.dataType == DT_BOOL)
+		                    ofs << theField.name + " = dis.readBoolean();" << endl;
+		                else if(theField.dataType == DT_STRING)
+		                    ofs << theField.name + " = dis.readUTF();" << endl;
                     }else if(theField.declarationType == DLT_BYTE_ARRAY){
-                        string arrayLength = nextParamName();
-                        ofs << "int " + arrayLength + " = SerializationUtil.readVariableLength(dis);" << endl;
-                        ofs << theField.name + " = new byte["+arrayLength+"];";
+                    	string arrayLength = nextParamName();
+            			ofs << "int " + arrayLength + " = SerializationUtil.readVariableLength(dis);" << endl;
+            			ofs << theField.name + " = new byte["+arrayLength+"];";
                         ofs << "dos.read(" + theField.name + ");" << endl;
                     }
     }
@@ -671,23 +671,23 @@ class JavaCodeGenerator : public CodeGenerator {
             string typeName = getTypeName(*(function->params[i]));
             ss << typeName << " " << (*(function->params[i])).name;
             if(i < function->params.size() - 1){
-                ss << ",";
+            	ss << ",";
             }
         }
-        
+
         return ss.str();
     }
-    
+
     string getParamNameListString(Function* function){
         ostringstream ss;
         for(int i=0;i < function->params.size();i++){
             string typeName = getTypeName(*(function->params[i]));
             ss << (*(function->params[i])).name;
             if(i < function->params.size() - 1){
-                ss << ",";
+            	ss << ",";
             }
         }
-        
+
         return ss.str();
     }
     
@@ -698,20 +698,20 @@ class JavaCodeGenerator : public CodeGenerator {
             string packagePath = unit->currentPackage;
             // std::replace(packagePath.begin(), packagePath.end(), ".", "/");
             boost::replace_all(packagePath, ".", "/");
-            dir /= "/" + packagePath;
-            cout << "final path:" << dir << endl;
+            dir += "/" + packagePath;
+            cout << "final path:" << dir << endl; 
             boost::filesystem::create_directories(dir);
         }
         if(!fs::exists(dir)){
             cout << "java generator output dir does not exist:" << dir << endl;
             exit(-1);
         }
-        
-        dir = fs::complete(dir);
+
+        dir = fs::canonical(dir);
         path = dir.native();
-        
+
         cout << "generating java source to:" << path << endl;
-        
+
         map<string, Definition*>& definitions = unit->definitions;
         
         for( map<string, Definition*>::iterator it = definitions.begin(); it != definitions.end(); ++it ) {
@@ -754,7 +754,7 @@ class JavaCodeGenerator : public CodeGenerator {
                 ofs << "}" << endl;
                 
                 ofs << "}" << endl;
-                ofs.close();
+            	ofs.close();
             } else if(type == DFT_STRUCTURE){
                 ofstream ofs(path + "/" + name + ".java");
                 if(unit->currentPackage != ""){
@@ -787,14 +787,14 @@ class JavaCodeGenerator : public CodeGenerator {
                     } else if(theField.declarationType == DLT_USER){
                         ofs << "fm.mark(true);" << endl;
                     } else if(theField.declarationType == DLT_PRIMITIVE){
-                        if(theField.dataType == DT_INT64
-                           ||theField.dataType == DT_UINT64
-                           ||theField.dataType == DT_DOUBLE
-                           ||theField.dataType == DT_FLOAT
-                           ||theField.dataType == DT_INT32
-                           ||theField.dataType == DT_UINT32
-                           ||theField.dataType == DT_INT16
-                           ||theField.dataType == DT_UINT16
+                        if(theField.dataType == DT_INT64 
+                           ||theField.dataType == DT_UINT64 
+                           ||theField.dataType == DT_DOUBLE 
+                           ||theField.dataType == DT_FLOAT 
+                           ||theField.dataType == DT_INT32 
+                           ||theField.dataType == DT_UINT32 
+                           ||theField.dataType == DT_INT16 
+                           ||theField.dataType == DT_UINT16 
                            ||theField.dataType == DT_INT8){
                             ofs << "fm.mark(" << theField.name << " != 0);" << endl;
                         }else if(theField.dataType == DT_BOOL){
@@ -803,34 +803,34 @@ class JavaCodeGenerator : public CodeGenerator {
                             ofs << "fm.mark(" << theField.name << " != null && "<< theField.name << ".length() > 0);" << endl;
                         }
                     }
-                }
+                }	    		
                 // serialize the field mark
-                ofs << "dos.write(fm.getData());" << endl;
+                ofs << "dos.write(fm.getData());" << endl;     
                 //actual serilization code
                 for(int i=0; i < fields.size(); i++){
                     TypeDeclaration& theField = *fields[i];
                     ofs << "if(fm.isMarked("+itoa(i)+")){" << endl;
                     serializeField(ofs, theField);
-                    ofs << "}" << endl;
-                }
+                    ofs << "}" << endl;		
+                }	 
                 
                 // ofs << "}" << endl;
-                ofs << "}" << endl;
-                
+                ofs << "}" << endl;			
+
                 //deserializer
                 ofs << "public void deserialize(DataInputStream dis) throws Exception{" << endl;
-                ofs << "FieldMark fm = new FieldMark(" << fieldMarkSize << ");" << endl;
-                ofs << "dis.read(fm.getData());" << endl;
-                for(int i=0; i < fields.size(); i++){
+				ofs << "FieldMark fm = new FieldMark(" << fieldMarkSize << ");" << endl;
+				ofs << "dis.read(fm.getData());" << endl;
+				for(int i=0; i < fields.size(); i++){
                     TypeDeclaration& theField = *fields[i];
                     ofs << "if(fm.readMark()){" << endl;
                     deserializeField(ofs, theField);
-                    ofs << "}" << endl;
+                    ofs << "}" << endl;		
                 }
-                ofs << "}" << endl;
-                
-                ofs << "}" << endl;
-                ofs.close();
+                ofs << "}" << endl;		
+
+                ofs << "}" << endl;			
+            	ofs.close();
             } else if(type == DFT_INTERFACE){
                 Interface& theInterface = *dynamic_cast<Interface*>(definition);
                 // 1. proxy class
@@ -844,10 +844,10 @@ class JavaCodeGenerator : public CodeGenerator {
                 for(int i=0; i < theInterface.functions.size();i++){
                     ofs << "public abstract void "+ theInterface.functions[i]->name +"(" + getParamListString(theInterface.functions[i]) + ");"	<< endl;
                 }
-                ofs << "}" << endl;
+                ofs << "}" << endl;		
                 ofs.close();
-                
-                
+
+
                 // 2. stub
                 ofs.open(path + "/" + name + "Stub" + ".java");
                 if(unit->currentPackage != ""){
@@ -856,22 +856,22 @@ class JavaCodeGenerator : public CodeGenerator {
                 ofs << "import java.io.*;" << endl;
                 ofs << "import info.chenliang.talky.*;" << endl;
                 ofs << "public abstract class " + name + "Stub {" << endl;
-                ofs << "protected abstract DataOutputStream begin();" << endl;
-                ofs << "protected abstract void end();" << endl;
-                
+				ofs << "protected abstract DataOutputStream begin();" << endl;
+				ofs << "protected abstract void end();" << endl;
+
                 for(int i=0; i < theInterface.functions.size();i++){
-                    ofs << "public void "+ theInterface.functions[i]->name +"(" + getParamListString(theInterface.functions[i]) + ") throws Exception{" << endl;
-                    ofs << "DataOutputStream dos = begin();" << endl;
+                    ofs << "public void "+ theInterface.functions[i]->name +"(" + getParamListString(theInterface.functions[i]) + ") throws Exception{" << endl;	
+					ofs << "DataOutputStream dos = begin();" << endl;
                     for(int j=0;j < theInterface.functions[i]->params.size();j++){
-                        serializeField(ofs, *(theInterface.functions[i]->params[j]));
+                    	serializeField(ofs, *(theInterface.functions[i]->params[j]));
                     }
-                    
+
                     ofs << "end();" << endl;
                     ofs << "}" << endl;
                 }
-                ofs << "}" << endl;
+                ofs << "}" << endl;			
                 ofs.close();
-                
+
                 // 3. dispatcher
                 ofs.open(path + "/" + name + "Dispatcher" + ".java");
                 if(unit->currentPackage != ""){
@@ -882,37 +882,37 @@ class JavaCodeGenerator : public CodeGenerator {
                 ofs << "public class " + name + "Dispatcher {" << endl;
                 // 1. dispatcher method
                 ofs << "public static void dispatch(DataInputStream dis, "+name+"Proxy proxy) throws Exception{" << endl;
-                ofs << "int fid = (int)(dis.read()&0xFFFF);"<<endl;
-                ofs << "switch(fid)" << endl;
-                ofs << "{" << endl;
-                for(int i=0; i < theInterface.functions.size();i++){
-                    ofs << "case " + itoa(i) + ":" << endl;
-                    ofs << "{" << endl;
-                    ofs << theInterface.functions[i]->name << "(dis, proxy);" << endl;
-                    ofs << "}" << endl;
-                    ofs << "break;" << endl;
+				ofs << "int fid = (int)(dis.read()&0xFFFF);"<<endl;
+				ofs << "switch(fid)" << endl;
+				ofs << "{" << endl;
+				for(int i=0; i < theInterface.functions.size();i++){
+					ofs << "case " + itoa(i) + ":" << endl;
+					ofs << "{" << endl;
+					ofs << theInterface.functions[i]->name << "(dis, proxy);" << endl;
+					ofs << "}" << endl;
+					ofs << "break;" << endl;
                 }
-                ofs << "}" << endl; // switch
-                ofs << "}" << endl; // dispatch method
+				ofs << "}" << endl; // switch
+				ofs << "}" << endl; // dispatch method
                 // 2. deserialize param and call proxy
                 for(int i=0; i < theInterface.functions.size();i++){
-                    ofs << "protected static void "+theInterface.functions[i]->name+"(DataInputStream dis, "+name+"Proxy proxy) throws Exception{" << endl;
-                    for(int j=0; j<theInterface.functions[i]->params.size();j++){
-                        string typeName = getTypeName(*theInterface.functions[i]->params[j]);
-                        ofs << typeName << " " << theInterface.functions[i]->params[j]->name << ";" << endl;
-                    }
-                    for(int j=0; j<theInterface.functions[i]->params.size();j++){
-                        deserializeField(ofs, *theInterface.functions[i]->params[j]);
-                    }
-                    
-                    //make the call
-                    ofs << "proxy." << theInterface.functions[i]->name << "(" + getParamNameListString(theInterface.functions[i]) + ");" << endl;
-                    
-                    ofs << "}" << endl;
+                	ofs << "protected static void "+theInterface.functions[i]->name+"(DataInputStream dis, "+name+"Proxy proxy) throws Exception{" << endl;
+                	for(int j=0; j<theInterface.functions[i]->params.size();j++){
+                		string typeName = getTypeName(*theInterface.functions[i]->params[j]);
+                		ofs << typeName << " " << theInterface.functions[i]->params[j]->name << ";" << endl;
+                	}
+					for(int j=0; j<theInterface.functions[i]->params.size();j++){
+                		deserializeField(ofs, *theInterface.functions[i]->params[j]);
+                	}
+
+                	//make the call
+                	ofs << "proxy." << theInterface.functions[i]->name << "(" + getParamNameListString(theInterface.functions[i]) + ");" << endl;
+
+                	ofs << "}" << endl;
                 }
                 ofs << "}" << endl;			
-                ofs.close();
-                
+            	ofs.close();
+            	
             }
             
             
