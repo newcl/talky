@@ -120,7 +120,7 @@ int main(int argc, char** argv){
 		Parser::getInstance().onTalkyUnitParsed(talkyUnit);
 	}while(Parser::getInstance().hasMoreTalkyUnits());
 
-	dir = fs::canonical(dir);
+	dir = fs::complete(dir);
 	string absolutePath = dir.native();
 	CodeGenerator* cg = new JavaCodeGenerator();
 

@@ -698,7 +698,7 @@ class JavaCodeGenerator : public CodeGenerator {
             string packagePath = unit->currentPackage;
             // std::replace(packagePath.begin(), packagePath.end(), ".", "/");
             boost::replace_all(packagePath, ".", "/");
-            dir += "/" + packagePath;
+            dir /= "/" + packagePath;
             cout << "final path:" << dir << endl;
             boost::filesystem::create_directories(dir);
         }
@@ -707,7 +707,7 @@ class JavaCodeGenerator : public CodeGenerator {
             exit(-1);
         }
         
-        dir = fs::canonical(dir);
+        dir = fs::complete(dir);
         path = dir.native();
         
         cout << "generating java source to:" << path << endl;
