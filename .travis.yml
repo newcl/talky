@@ -1,6 +1,21 @@
-language: java
+language: 
+  - java
+  - cpp
 script:
   - gradle -b lang/java/build.gradle check
   - sh run.sh
   - gradle -b demo/java/build.gradle check
-
+sudo: false
+compiler:
+  - gcc
+    - clang
+	install:
+	- if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+	addons:
+	  apt:
+      sources:
+      - ubuntu-toolchain-r-test
+      packages:
+      - gcc-4.8
+      - g++-4.8
+      - clang
