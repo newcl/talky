@@ -1,3 +1,5 @@
+sudo: required
+dist: trusty
 language: java
 script:
 - gradle -b lang/java/build.gradle check
