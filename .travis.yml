@@ -2,6 +2,7 @@ sudo: required
 dist: trusty
 language: java
 script:
+- gradle -b lang/java/build.gradle myjar
 - gradle -b lang/java/build.gradle check
 - sh run.sh
 - gradle -b demo/java/build.gradle check

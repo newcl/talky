@@ -30,6 +30,7 @@ task myjar(type: Jar) {
                 'Implementation-Version': version,
                 'Main-Class': 'com.mkyong.DateUtils'
     }
+    destinationDir = file("../../demo/java/lib/")
     baseName = jarName
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
