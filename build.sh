@@ -9,5 +9,5 @@ flex talky.l
 cd ..
 
 # -ll for mac os, others should use -lfl if flex is installed correctly
-g++ -w -std=c++11 -o talky -lboost_program_options -lboost_filesystem -lboost_system -ll -lstdc++ ./bison/talky.tab.c ./flex/lex.yy.c ./parser/src/parser.cpp 
+g++ -w -std=c++11 -o talky  ./bison/talky.tab.c ./flex/lex.yy.c ./parser/src/parser.cpp -lboost_program_options -lboost_filesystem -lboost_system -ll -lstdc++
 #g++ -w -lboost_program_options -lboost_filesystem -lboost_system -ll -lstdc++ -o talky ./bison/talky.tab.c ./flex/lex.yy.c ./parser/src/parser.cpp 

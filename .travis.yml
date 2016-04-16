@@ -13,5 +13,6 @@ install:
 - sudo apt-get -yqq install g++-4.8
 - export CXX="g++-4.8"
 - sh install_dep.sh
-- sudo apt-get -yqq install libboost1.54-dev
+- sudo apt-get -yqq install libboost-filesystem1.54-dev
+- sudo apt-get -yqq install libboost-program-options1.54-dev
 - sudo apt-get -yqq install bison flex
