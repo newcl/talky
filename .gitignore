@@ -64,3 +64,10 @@ target/
 
 #talky specific
 talky
+
+
+
+demo/java/.idea
+lang/java/.gradle
+lang/java/java.iws
+

@@ -862,6 +862,7 @@ class JavaCodeGenerator : public CodeGenerator {
                 for(int i=0; i < theInterface.functions.size();i++){
                     ofs << "public void "+ theInterface.functions[i]->name +"(" + getParamListString(theInterface.functions[i]) + ") throws Exception{" << endl;	
 					ofs << "DataOutputStream dos = begin();" << endl;
+                    ofs << "dos.write("<<i<<");" << endl;
                     for(int j=0;j < theInterface.functions[i]->params.size();j++){
                     	serializeField(ofs, *(theInterface.functions[i]->params[j]));
                     }
