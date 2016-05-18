@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -99,5 +100,41 @@ public class SerializationTest {
             assertTrue(copy.itemInsts[i].itemId == player.itemInsts[i].itemId);
             assertTrue(copy.itemInsts[i].seq == player.itemInsts[i].seq);
         }
+    }
+
+    @Test
+    public void testPrimitiveArray() throws Exception{
+        byte[] bytes = new byte[]{-1,2,3,11,29};
+        short[] shorts = new short[]{-32,2323,222,-211,33};
+        int[] ints = new int[]{-31341,2341,334,10,0};
+        long[] longs = new long[]{13,-2,33,89,-100};
+        float[] floats = new float[]{2,0.8f,-92,-993.234f};
+        double[] doubles = new double[]{2,0.8f,-92,-993.234f};
+
+
+        PrimitiveArray primitiveArray = new PrimitiveArray();
+        primitiveArray.byteArray = bytes;
+        primitiveArray.shortArray = shorts;
+        primitiveArray.intArray = ints;
+        primitiveArray.longArray = longs;
+        primitiveArray.floatArray = floats;
+        primitiveArray.doubleArray = doubles;
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DataOutputStream dos = new DataOutputStream(baos);
+        primitiveArray.serialize(dos);
+
+        DataInputStream dis = new DataInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        PrimitiveArray copy = new PrimitiveArray();
+        copy.deserialize(dis);
+
+        assertArrayEquals(copy.byteArray, bytes);
+        assertArrayEquals(copy.shortArray, shorts);
+        assertArrayEquals(copy.intArray, ints);
+        assertArrayEquals(copy.longArray, longs);
+        assertArrayEquals(copy.floatArray, floats, floats.length);
+        assertArrayEquals(copy.doubleArray, doubles, doubles.length);
+
+
     }
 }

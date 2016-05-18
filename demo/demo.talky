@@ -69,6 +69,15 @@ struct Player {
 	Point3d position;		
 }
 
+struct PrimitiveArray {
+	array[int8] byteArray;
+	array[int16] shortArray;
+	array[int32] intArray;
+	array[int64] longArray;
+	array[float] floatArray;
+	array[double] doubleArray;
+}
+
 /*
 public class Player{
 	public String name;

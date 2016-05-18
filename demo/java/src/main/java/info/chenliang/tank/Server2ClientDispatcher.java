@@ -27,8 +27,8 @@ proxy.onHit(attacker,damage);
 }
 protected static void onSync(DataInputStream dis, Server2ClientProxy proxy) throws Exception{
 Player[] players;
-int __1__ = SerializationUtil.readVariableLength(dis);
-players = new Player[__1__];
+int __7__ = SerializationUtil.readVariableLength(dis);
+players = new Player[__7__];
 for(int i=0; i < players.length;i++){
 players[i] = new Player();
 players[i].deserialize(dis);
