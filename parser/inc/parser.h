@@ -530,23 +530,23 @@ class JavaCodeGenerator : public CodeGenerator {
                 else if(theField.dataType == DT_UINT64)
                     ofs << "dos.writeLong("+theField.name+"[i]);" << endl;
                 else if (theField.dataType == DT_DOUBLE)
-                    ofs << "dos.writeDouble("+theField.name+"[]);" << endl;
+                    ofs << "dos.writeDouble("+theField.name+"[i]);" << endl;
                 else if (theField.dataType == DT_FLOAT)
-                    ofs << "dos.writeFloat("+theField.name+"[]);" << endl;
+                    ofs << "dos.writeFloat("+theField.name+"[i]);" << endl;
                 else if (theField.dataType == DT_INT32)
-                    ofs << "dos.writeInt("+theField.name+"[]);" << endl;
+                    ofs << "dos.writeInt("+theField.name+"[i]);" << endl;
                 else if (theField.dataType == DT_UINT32)
-                    ofs << "dos.writeInt("+theField.name+"[]);" << endl;
+                    ofs << "dos.writeInt("+theField.name+"[i]);" << endl;
                 else if (theField.dataType == DT_INT16)
-                    ofs << "dos.writeShort("+theField.name+"[]);" << endl;
+                    ofs << "dos.writeShort("+theField.name+"[i]);" << endl;
                 else if (theField.dataType == DT_UINT16)
-                    ofs << "dos.writeShort("+theField.name+"[]);" << endl;
+                    ofs << "dos.writeShort("+theField.name+"[i]);" << endl;
                 else if (theField.dataType == DT_INT8)
-                    ofs << "dos.writeByte("+theField.name+"[]);" << endl;
+                    ofs << "dos.writeByte("+theField.name+"[i]);" << endl;
                 else if(theField.dataType == DT_BOOL)
-                    ofs << "dos.writeBoolean("+theField.name+"[]);" << endl;
+                    ofs << "dos.writeBoolean("+theField.name+"[i]);" << endl;
                 else if(theField.dataType == DT_STRING)
-                    ofs << "dos.writeUTF("+theField.name+"[]);" << endl;
+                    ofs << "dos.writeUTF("+theField.name+"[i]);" << endl;
                 
                 ofs << "}" << endl;
             }else{
