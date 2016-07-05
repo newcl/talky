@@ -15,13 +15,8 @@ public:
     Definition(name){
     }
     
-    void onNewMember(string name){
-        _assert(std::find(members.begin(), members.end(), name) == members.end());
-        members.push_back(name);
-    }
-    DefinitionType getType(){
-        return DFT_ENUM;
-    }
+    void onNewMember(string name);
+    DefinitionType getType();
     std::vector<string> members;
 };
 
