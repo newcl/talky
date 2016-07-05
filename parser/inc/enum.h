@@ -3,6 +3,7 @@
 
 
 #include <vector>
+#include <algorithm>
 
 #include "definition.h"
 #include "assert.h"
