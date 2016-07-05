@@ -7,7 +7,7 @@ using namespace std;
 #define YYSTYPE std::string
 
 
-#include "../parser/inc/parser.h"
+#include "../parser/inc/talky_parser.h"
 #include "../bison/talky.tab.h"
 
 /* disable name mangling for g++ */
@@ -116,7 +116,7 @@ bytes			{
 
 				}
 \/\/.*{NEWLINE} {
-					Parser::getInstance().onNewLine();
+					TalkyParser::getInstance().onNewLine();
                 }
 "/*"			{
 					for(;;) {
@@ -130,12 +130,12 @@ bytes			{
 								unput(next);
 						}
 						else if (c == '\n') {
-							Parser::getInstance().onNewLine();
+							TalkyParser::getInstance().onNewLine();
 						}
 					}
 				}
 {NEWLINE}		{
-					Parser::getInstance().onNewLine();
+					TalkyParser::getInstance().onNewLine();
 				}
 .				{
 					yylval = std::string( yytext, yyleng );

@@ -2,7 +2,7 @@
 #define YYDEBUG 1
 #include <cstdio>
 #include <iostream>
-#include "../parser/inc/parser.h"
+#include "../parser/inc/talky_parser.h"
 using namespace std;
 // what bison needs to know from flex
 extern "C" int yylex();
@@ -53,7 +53,7 @@ enumeration:
 	TOKEN_IDENTIFIER
 	{
 		//cout << "enum definition found " << $2 << endl ;
-		Parser::getInstance().onNewEnum($2);
+		TalkyParser::getInstance().onNewEnum($2);
 	}
 	'{' enumeration_body '}'
 	{
@@ -69,7 +69,7 @@ enumeration_body:
 enumeration_member:
 	TOKEN_IDENTIFIER ','
 	{
-		Parser::getInstance().onEnumMember($1);
+		TalkyParser::getInstance().onEnumMember($1);
 	}
 	;
 
@@ -77,7 +77,7 @@ structure:
 	TOKEN_STRUCT
 	TOKEN_IDENTIFIER
 	{
-		Parser::getInstance().onNewStructure($2);
+		TalkyParser::getInstance().onNewStructure($2);
 	}
 	'{' structure_body '}'
 	{
@@ -87,7 +87,7 @@ structure:
 package:
 	TOKEN_PACKAGE TOKEN_IDENTIFIER_PACKAGE ';'
 	{
-		Parser::getInstance().onPackage($2);
+		TalkyParser::getInstance().onPackage($2);
 		//YYACCEPT
 	}
 	;
@@ -101,7 +101,7 @@ structure_body:
 structure_member:
 	data_type TOKEN_IDENTIFIER ';'
 	{
-		Parser::getInstance().onStructureMember($2);
+		TalkyParser::getInstance().onStructureMember($2);
 	}
 	;
 
@@ -109,7 +109,7 @@ interface:
 	TOKEN_INTERFACE
 	TOKEN_IDENTIFIER
 	{
-		Parser::getInstance().onNewInterface($2);	
+		TalkyParser::getInstance().onNewInterface($2);	
 	}
 	'{' interface_body '}'
 	{
@@ -126,7 +126,7 @@ member_function:
 	TOKEN_IDENTIFIER
 	'(' function_params ')' ';'
 	{	
-		Parser::getInstance().onMemberFunction($1);
+		TalkyParser::getInstance().onMemberFunction($1);
 	}
 	;
 
@@ -141,7 +141,7 @@ function_params:
 function_param:
 	data_type TOKEN_IDENTIFIER
 	{
-		Parser::getInstance().onFunctionParam($2);
+		TalkyParser::getInstance().onFunctionParam($2);
 	}
 	;
 
@@ -159,42 +159,42 @@ data_type:
 user_type:
 	TOKEN_IDENTIFIER	
 	{
-		Parser::getInstance().onUserDataType($1);
+		TalkyParser::getInstance().onUserDataType($1);
 	}
 	;
 basic_type:
 	TOKEN_INT64	
 	{ 
-		Parser::getInstance().onDataType(DT_INT64); 
+		TalkyParser::getInstance().onDataType(DT_INT64); 
 	}
 	|
-	TOKEN_UINT64 { Parser::getInstance().onDataType(DT_UINT64); }
+	TOKEN_UINT64 { TalkyParser::getInstance().onDataType(DT_UINT64); }
 	|
-	TOKEN_DOUBLE {Parser::getInstance().onDataType(DT_DOUBLE); }
+	TOKEN_DOUBLE {TalkyParser::getInstance().onDataType(DT_DOUBLE); }
 	|
-	TOKEN_FLOAT	{ Parser::getInstance().onDataType(DT_FLOAT); }
+	TOKEN_FLOAT	{ TalkyParser::getInstance().onDataType(DT_FLOAT); }
 	|
-	TOKEN_INT32	{ Parser::getInstance().onDataType(DT_INT32); }
+	TOKEN_INT32	{ TalkyParser::getInstance().onDataType(DT_INT32); }
 	|
-	TOKEN_UINT32 { Parser::getInstance().onDataType(DT_UINT32); }
+	TOKEN_UINT32 { TalkyParser::getInstance().onDataType(DT_UINT32); }
 	|
-	TOKEN_INT16	{ Parser::getInstance().onDataType(DT_INT16); }
+	TOKEN_INT16	{ TalkyParser::getInstance().onDataType(DT_INT16); }
 	|
-	TOKEN_UINT16 { Parser::getInstance().onDataType(DT_UINT16); }
+	TOKEN_UINT16 { TalkyParser::getInstance().onDataType(DT_UINT16); }
 	|
-	TOKEN_INT8	{ Parser::getInstance().onDataType(DT_INT8); }
+	TOKEN_INT8	{ TalkyParser::getInstance().onDataType(DT_INT8); }
 	|
-	TOKEN_UINT8	{ Parser::getInstance().onDataType(DT_UINT8); }
+	TOKEN_UINT8	{ TalkyParser::getInstance().onDataType(DT_UINT8); }
 	|
-	TOKEN_BOOL	{ Parser::getInstance().onDataType(DT_BOOL); }
+	TOKEN_BOOL	{ TalkyParser::getInstance().onDataType(DT_BOOL); }
 	|
-	TOKEN_STRING { Parser::getInstance().onDataType(DT_STRING); }
+	TOKEN_STRING { TalkyParser::getInstance().onDataType(DT_STRING); }
 	;
 
 user_array_type:
 	TOKEN_ARRAY '[' user_type ']'
 	{
-		Parser::getInstance().onNewUserArray($3);
+		TalkyParser::getInstance().onNewUserArray($3);
 	}
 	;
 	
@@ -202,14 +202,14 @@ user_array_type:
 primitive_array_type:
 	TOKEN_ARRAY '[' basic_type ']'
 	{
-		Parser::getInstance().onNewPrimitiveArray($3);
+		TalkyParser::getInstance().onNewPrimitiveArray($3);
 	}
 	;
 
 byte_array_type:
 	TOKEN_BYTES
 	{
-		Parser::getInstance().onNewByteArray();	
+		TalkyParser::getInstance().onNewByteArray();	
 	}
 	;
 

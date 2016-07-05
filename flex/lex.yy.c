@@ -531,7 +531,7 @@ using namespace std;
 #define YYSTYPE std::string
 
 
-#include "../parser/inc/parser.h"
+#include "../parser/inc/talky_parser.h"
 #include "../bison/talky.tab.h"
 
 /* disable name mangling for g++ */
@@ -971,7 +971,7 @@ case 22:
 YY_RULE_SETUP
 #line 118 "talky.l"
 {
-					Parser::getInstance().onNewLine();
+					TalkyParser::getInstance().onNewLine();
                 }
 	YY_BREAK
 case 23:
@@ -989,7 +989,7 @@ YY_RULE_SETUP
 								unput(next);
 						}
 						else if (c == '\n') {
-							Parser::getInstance().onNewLine();
+							TalkyParser::getInstance().onNewLine();
 						}
 					}
 				}
@@ -999,7 +999,7 @@ case 24:
 YY_RULE_SETUP
 #line 137 "talky.l"
 {
-					Parser::getInstance().onNewLine();
+					TalkyParser::getInstance().onNewLine();
 				}
 	YY_BREAK
 case 25:

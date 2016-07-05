@@ -1,10 +1,10 @@
-#include "../inc/parser.h"
+#include "../inc/main.h"
 
 extern FILE* yyin;
 
-Parser& Parser::getInstance()
+TalkyParser& TalkyParser::getInstance()
 {
-	static Parser parser;
+	static TalkyParser parser;
 	return parser;
 }
 
@@ -100,10 +100,10 @@ int main(int argc, char** argv){
 	// 	return -1;
 	// }
 
-	Parser::getInstance().parse(talkyFile);
+	TalkyParser::getInstance().parse(talkyFile);
 	// TODO move to Parser::parse
 	do{
-		TalkyUnit* talkyUnit = Parser::getInstance().takeTalkyUnit();
+		TalkyUnit* talkyUnit = TalkyParser::getInstance().takeTalkyUnit();
 		yyin = talkyUnit->file;
 		do{
 			int code = yyparse();
@@ -117,15 +117,15 @@ int main(int argc, char** argv){
 			}
 		}while(!feof(yyin));	
 
-		Parser::getInstance().onTalkyUnitParsed(talkyUnit);
-	}while(Parser::getInstance().hasMoreTalkyUnits());
+		TalkyParser::getInstance().onTalkyUnitParsed(talkyUnit);
+	}while(TalkyParser::getInstance().hasMoreTalkyUnits());
 
 	dir = fs::complete(dir);
 	string absolutePath = dir.native();
 	CodeGenerator* cg = new JavaCodeGenerator();
 
-	for(int i=0; i < Parser::getInstance().parsedTalkyUnits.size();i++){
-		TalkyUnit* unit = Parser::getInstance().parsedTalkyUnits[i];
+	for(int i=0; i < TalkyParser::getInstance().parsedTalkyUnits.size();i++){
+		TalkyUnit* unit = TalkyParser::getInstance().parsedTalkyUnits[i];
 		cg->generate(unit, absolutePath);
 	}
 

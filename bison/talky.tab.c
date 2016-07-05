@@ -121,7 +121,7 @@
 #define YYDEBUG 1
 #include <cstdio>
 #include <iostream>
-#include "../parser/inc/parser.h"
+#include "../parser/inc/talky_parser.h"
 using namespace std;
 // what bison needs to know from flex
 extern "C" int yylex();
@@ -1428,7 +1428,7 @@ yyreduce:
 #line 54 "talky.y"
     {
 		//cout << "enum definition found " << $2 << endl ;
-		Parser::getInstance().onNewEnum((yyvsp[(2) - (2)]));
+		TalkyParser::getInstance().onNewEnum((yyvsp[(2) - (2)]));
 	;}
     break;
 
@@ -1441,14 +1441,14 @@ yyreduce:
   case 13:
 #line 71 "talky.y"
     {
-		Parser::getInstance().onEnumMember((yyvsp[(1) - (2)]));
+		TalkyParser::getInstance().onEnumMember((yyvsp[(1) - (2)]));
 	;}
     break;
 
   case 14:
 #line 79 "talky.y"
     {
-		Parser::getInstance().onNewStructure((yyvsp[(2) - (2)]));
+		TalkyParser::getInstance().onNewStructure((yyvsp[(2) - (2)]));
 	;}
     break;
 
@@ -1461,7 +1461,7 @@ yyreduce:
   case 16:
 #line 89 "talky.y"
     {
-		Parser::getInstance().onPackage((yyvsp[(2) - (3)]));
+		TalkyParser::getInstance().onPackage((yyvsp[(2) - (3)]));
 		//YYACCEPT
 	;}
     break;
@@ -1469,14 +1469,14 @@ yyreduce:
   case 19:
 #line 103 "talky.y"
     {
-		Parser::getInstance().onStructureMember((yyvsp[(2) - (3)]));
+		TalkyParser::getInstance().onStructureMember((yyvsp[(2) - (3)]));
 	;}
     break;
 
   case 20:
 #line 111 "talky.y"
     {
-		Parser::getInstance().onNewInterface((yyvsp[(2) - (2)]));	
+		TalkyParser::getInstance().onNewInterface((yyvsp[(2) - (2)]));	
 	;}
     break;
 
@@ -1489,104 +1489,104 @@ yyreduce:
   case 24:
 #line 128 "talky.y"
     {	
-		Parser::getInstance().onMemberFunction((yyvsp[(1) - (5)]));
+		TalkyParser::getInstance().onMemberFunction((yyvsp[(1) - (5)]));
 	;}
     break;
 
   case 28:
 #line 143 "talky.y"
     {
-		Parser::getInstance().onFunctionParam((yyvsp[(2) - (2)]));
+		TalkyParser::getInstance().onFunctionParam((yyvsp[(2) - (2)]));
 	;}
     break;
 
   case 34:
 #line 161 "talky.y"
     {
-		Parser::getInstance().onUserDataType((yyvsp[(1) - (1)]));
+		TalkyParser::getInstance().onUserDataType((yyvsp[(1) - (1)]));
 	;}
     break;
 
   case 35:
 #line 167 "talky.y"
     { 
-		Parser::getInstance().onDataType(DT_INT64); 
+		TalkyParser::getInstance().onDataType(DT_INT64); 
 	;}
     break;
 
   case 36:
 #line 171 "talky.y"
-    { Parser::getInstance().onDataType(DT_UINT64); ;}
+    { TalkyParser::getInstance().onDataType(DT_UINT64); ;}
     break;
 
   case 37:
 #line 173 "talky.y"
-    {Parser::getInstance().onDataType(DT_DOUBLE); ;}
+    {TalkyParser::getInstance().onDataType(DT_DOUBLE); ;}
     break;
 
   case 38:
 #line 175 "talky.y"
-    { Parser::getInstance().onDataType(DT_FLOAT); ;}
+    { TalkyParser::getInstance().onDataType(DT_FLOAT); ;}
     break;
 
   case 39:
 #line 177 "talky.y"
-    { Parser::getInstance().onDataType(DT_INT32); ;}
+    { TalkyParser::getInstance().onDataType(DT_INT32); ;}
     break;
 
   case 40:
 #line 179 "talky.y"
-    { Parser::getInstance().onDataType(DT_UINT32); ;}
+    { TalkyParser::getInstance().onDataType(DT_UINT32); ;}
     break;
 
   case 41:
 #line 181 "talky.y"
-    { Parser::getInstance().onDataType(DT_INT16); ;}
+    { TalkyParser::getInstance().onDataType(DT_INT16); ;}
     break;
 
   case 42:
 #line 183 "talky.y"
-    { Parser::getInstance().onDataType(DT_UINT16); ;}
+    { TalkyParser::getInstance().onDataType(DT_UINT16); ;}
     break;
 
   case 43:
 #line 185 "talky.y"
-    { Parser::getInstance().onDataType(DT_INT8); ;}
+    { TalkyParser::getInstance().onDataType(DT_INT8); ;}
     break;
 
   case 44:
 #line 187 "talky.y"
-    { Parser::getInstance().onDataType(DT_UINT8); ;}
+    { TalkyParser::getInstance().onDataType(DT_UINT8); ;}
     break;
 
   case 45:
 #line 189 "talky.y"
-    { Parser::getInstance().onDataType(DT_BOOL); ;}
+    { TalkyParser::getInstance().onDataType(DT_BOOL); ;}
     break;
 
   case 46:
 #line 191 "talky.y"
-    { Parser::getInstance().onDataType(DT_STRING); ;}
+    { TalkyParser::getInstance().onDataType(DT_STRING); ;}
     break;
 
   case 47:
 #line 196 "talky.y"
     {
-		Parser::getInstance().onNewUserArray((yyvsp[(3) - (4)]));
+		TalkyParser::getInstance().onNewUserArray((yyvsp[(3) - (4)]));
 	;}
     break;
 
   case 48:
 #line 204 "talky.y"
     {
-		Parser::getInstance().onNewPrimitiveArray((yyvsp[(3) - (4)]));
+		TalkyParser::getInstance().onNewPrimitiveArray((yyvsp[(3) - (4)]));
 	;}
     break;
 
   case 49:
 #line 211 "talky.y"
     {
-		Parser::getInstance().onNewByteArray();	
+		TalkyParser::getInstance().onNewByteArray();	
 	;}
     break;
 
