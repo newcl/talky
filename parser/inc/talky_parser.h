@@ -11,7 +11,6 @@
 
 class TalkyUnit;
 class Definition;
-class vector;
 
 using namespace std;
 
