@@ -1,5 +1,5 @@
-#ifndef __java_code_generator__
-#define __java_code_generator__
+#ifndef __c_sharp_code_generator__
+#define __c_sharp_code_generator__
 
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
@@ -23,9 +23,9 @@
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 
-class JavaCodeGenerator : public CodeGenerator {
+class CSharpCodeGenerator : public CodeGenerator {
 public:
-    JavaCodeGenerator(){}
+    CSharpCodeGenerator(){}
 
     string getTypeName(TypeDeclaration& declaration);
 
@@ -40,6 +40,11 @@ public:
     string getParamNameListString(Function* function);
 
     void generate(TalkyUnit* unit, string path);
+private:
+	void generateUsingNamespaces(ofstream& ofs);
+	void generateDispatcher(string file, TalkyUnit* unit, Interface& theInterface);
+	void generateProxy(string file, TalkyUnit* unit, Interface& theInterface);
+	void generateStub(string file, TalkyUnit* unit, Interface& theInterface);
 };
 
 

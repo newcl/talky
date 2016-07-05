@@ -1,0 +1,4 @@
+/Users/chenliang/git_projects/talky/lang/csharp/talky_c_sharp_lib/talky_c_sharp_lib/bin/Debug/talky_c_sharp_lib.dll.mdb
+/Users/chenliang/git_projects/talky/lang/csharp/talky_c_sharp_lib/talky_c_sharp_lib/bin/Debug/talky_c_sharp_lib.dll
+/Users/chenliang/git_projects/talky/lang/csharp/talky_c_sharp_lib/talky_c_sharp_lib/obj/Debug/talky_c_sharp_lib.dll
+/Users/chenliang/git_projects/talky/lang/csharp/talky_c_sharp_lib/talky_c_sharp_lib/obj/Debug/talky_c_sharp_lib.dll.mdb

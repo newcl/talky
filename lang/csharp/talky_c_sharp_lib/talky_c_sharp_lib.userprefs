@@ -1,0 +1,17 @@
+﻿<Properties StartupItem="talky_c_sharp_lib/talky_c_sharp_lib.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="talky_c_sharp_lib/MemoryEndianBinaryWriter.cs">
+    <Files>
+      <File FileName="talky_c_sharp_lib/FieldMask.cs" Line="1" Column="1" />
+      <File FileName="talky_c_sharp_lib/SerializationUtil.cs" Line="41" Column="4" />
+      <File FileName="talky_c_sharp_lib/MemoryEndianBinaryReader.cs" Line="1" Column="1" />
+      <File FileName="talky_c_sharp_lib/MemoryEndianBinaryWriter.cs" Line="16" Column="31" />
+      <File FileName="talky_c_sharp_lib/MiscUtil/IO/EndianBinaryWriter.cs" Line="1" Column="1" />
+      <File FileName="talky_c_sharp_lib/MiscUtil/Collections/ProjectionComparer.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

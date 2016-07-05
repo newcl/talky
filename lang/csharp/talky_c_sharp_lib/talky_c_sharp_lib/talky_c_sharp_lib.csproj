@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{11ED0A25-57B6-426F-BA92-597784201688}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>talky_c_sharp_lib</RootNamespace>
+    <AssemblyName>talky_c_sharp_lib</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FieldMask.cs" />
+    <Compile Include="SerializationUtil.cs" />
+    <Compile Include="MiscUtil\ApplicationChooser.cs" />
+    <Compile Include="MiscUtil\BufferAcquisitionException.cs" />
+    <Compile Include="MiscUtil\CachedBuffer.cs" />
+    <Compile Include="MiscUtil\CachingBufferManager.cs" />
+    <Compile Include="MiscUtil\EventArgs.cs" />
+    <Compile Include="MiscUtil\GenericMath.cs" />
+    <Compile Include="MiscUtil\IBuffer.cs" />
+    <Compile Include="MiscUtil\IBufferManager.cs" />
+    <Compile Include="MiscUtil\NonNullable.cs" />
+    <Compile Include="MiscUtil\NullOp.cs" />
+    <Compile Include="MiscUtil\Operator.cs" />
+    <Compile Include="MiscUtil\PartialComparer.cs" />
+    <Compile Include="MiscUtil\StaticRandom.cs" />
+    <Compile Include="MiscUtil\Checksum\Adler32.cs" />
+    <Compile Include="MiscUtil\Collections\ComparisonComparer.cs" />
+    <Compile Include="MiscUtil\Collections\DictionaryByType.cs" />
+    <Compile Include="MiscUtil\Collections\LinkedComparer.cs" />
+    <Compile Include="MiscUtil\Collections\ProjectionComparer.cs" />
+    <Compile Include="MiscUtil\Collections\ProjectionEqualityComparer.cs" />
+    <Compile Include="MiscUtil\Collections\RandomAccessQueue.cs" />
+    <Compile Include="MiscUtil\Collections\Range.cs" />
+    <Compile Include="MiscUtil\Collections\RangeIterator.cs" />
+    <Compile Include="MiscUtil\Collections\ReverseComparer.cs" />
+    <Compile Include="MiscUtil\Collections\SmartEnumerable.cs" />
+    <Compile Include="MiscUtil\Collections\Extensions\ComparerExt.cs" />
+    <Compile Include="MiscUtil\Collections\Extensions\DictionaryExt.cs" />
+    <Compile Include="MiscUtil\Collections\Extensions\RangeBasedExt.cs" />
+    <Compile Include="MiscUtil\Collections\Extensions\SmartEnumerableExt.cs" />
+    <Compile Include="MiscUtil\Compression\Vcdiff\AddressCache.cs" />
+    <Compile Include="MiscUtil\Compression\Vcdiff\CodeTable.cs" />
+    <Compile Include="MiscUtil\Compression\Vcdiff\IOHelper.cs" />
+    <Compile Include="MiscUtil\Compression\Vcdiff\Instruction.cs" />
+    <Compile Include="MiscUtil\Compression\Vcdiff\InstructionType.cs" />
+    <Compile Include="MiscUtil\Compression\Vcdiff\VcdiffDecoder.cs" />
+    <Compile Include="MiscUtil\Compression\Vcdiff\VcdiffFormatException.cs" />
+    <Compile Include="MiscUtil\Conversion\BigEndianBitConverter.cs" />
+    <Compile Include="MiscUtil\Conversion\DoubleConverter.cs" />
+    <Compile Include="MiscUtil\Conversion\EndianBitConverter.cs" />
+    <Compile Include="MiscUtil\Conversion\Endianness.cs" />
+    <Compile Include="MiscUtil\Conversion\LittleEndianBitConverter.cs" />
+    <Compile Include="MiscUtil\DotNet20\Delegates.cs" />
+    <Compile Include="MiscUtil\DotNet20\ExtensionAttribute.cs" />
+    <Compile Include="MiscUtil\DotNet20\IGrouping.cs" />
+    <Compile Include="MiscUtil\DotNet20\ILookup.cs" />
+    <Compile Include="MiscUtil\Extensions\ReferenceExt.cs" />
+    <Compile Include="MiscUtil\Extensions\TimeRelated\DateTimeBasedExt.cs" />
+    <Compile Include="MiscUtil\Extensions\TimeRelated\TimeSpanBasedExt.cs" />
+    <Compile Include="MiscUtil\IO\EndianBinaryReader.cs" />
+    <Compile Include="MiscUtil\IO\EndianBinaryWriter.cs" />
+    <Compile Include="MiscUtil\IO\LineReader.cs" />
+    <Compile Include="MiscUtil\IO\NonClosingStreamWrapper.cs" />
+    <Compile Include="MiscUtil\IO\ReverseLineReader.cs" />
+    <Compile Include="MiscUtil\IO\StreamUtil.cs" />
+    <Compile Include="MiscUtil\IO\StringWriterWithEncoding.cs" />
+    <Compile Include="MiscUtil\Linq\DataProducer.cs" />
+    <Compile Include="MiscUtil\Linq\EditableLookup.LookupGrouping.cs" />
+    <Compile Include="MiscUtil\Linq\EditableLookup.cs" />
+    <Compile Include="MiscUtil\Linq\ExpressionUtil.cs" />
+    <Compile Include="MiscUtil\Linq\Future.cs" />
+    <Compile Include="MiscUtil\Linq\FutureProxy.cs" />
+    <Compile Include="MiscUtil\Linq\IDataProducer.cs" />
+    <Compile Include="MiscUtil\Linq\IFuture.cs" />
+    <Compile Include="MiscUtil\Linq\IOrderedDataProducer.cs" />
+    <Compile Include="MiscUtil\Linq\IProducerGrouping.cs" />
+    <Compile Include="MiscUtil\Linq\KeyValueTuple.cs" />
+    <Compile Include="MiscUtil\Linq\OrderedDataProducer.cs" />
+    <Compile Include="MiscUtil\Linq\ProducerGrouping.cs" />
+    <Compile Include="MiscUtil\Linq\Extensions\DataProducerExt.Conversion.cs" />
+    <Compile Include="MiscUtil\Linq\Extensions\DataProducerExt.Grouping.cs" />
+    <Compile Include="MiscUtil\Linq\Extensions\DataProducerExt.Math.cs" />
+    <Compile Include="MiscUtil\Linq\Extensions\DataProducerExt.Pipeline.cs" />
+    <Compile Include="MiscUtil\Linq\Extensions\DataProducerExt.SingleReturn.cs" />
+    <Compile Include="MiscUtil\Linq\Extensions\DataProducerExt.cs" />
+    <Compile Include="MiscUtil\Linq\Extensions\EnumerableExt.cs" />
+    <Compile Include="MiscUtil\Linq\Extensions\ListExt.cs" />
+    <Compile Include="MiscUtil\Linq\Extensions\TypeExt.cs" />
+    <Compile Include="MiscUtil\Properties\AssemblyInfo.cs" />
+    <Compile Include="MiscUtil\Reflection\PropertyCopy.cs" />
+    <Compile Include="MiscUtil\Text\UnicodeRange.cs" />
+    <Compile Include="MiscUtil\Text\Utf32String.cs" />
+    <Compile Include="MiscUtil\Threading\CustomThreadPool.cs" />
+    <Compile Include="MiscUtil\Threading\Delegates.cs" />
+    <Compile Include="MiscUtil\Threading\LockOrderException.cs" />
+    <Compile Include="MiscUtil\Threading\LockTimeoutException.cs" />
+    <Compile Include="MiscUtil\Threading\LockToken.cs" />
+    <Compile Include="MiscUtil\Threading\OrderedLock.cs" />
+    <Compile Include="MiscUtil\Threading\SyncLock.cs" />
+    <Compile Include="MiscUtil\Threading\ThreadController.cs" />
+    <Compile Include="MiscUtil\Threading\ThreadPoolWorkItem.cs" />
+    <Compile Include="MiscUtil\Xml\Linq\Extensions\ObjectExt.cs" />
+    <Compile Include="MemoryEndianBinaryReader.cs" />
+    <Compile Include="MemoryEndianBinaryWriter.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="MiscUtil\" />
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MiscUtil\MiscUtil.csproj" />
+  </ItemGroup>
+</Project>
