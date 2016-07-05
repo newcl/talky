@@ -53,34 +53,66 @@ string JavaCodeGenerator::getPrimitiveTypeName(DataType dataType) {
     return "unknown primitive type " + __ITOA(dataType);
 }
 
+void JavaCodeGenerator::writeField(ofstream & ofs, DataType dataType, string fieldName) {
+    if (dataType == DT_INT64)
+        ofs << "dos.writeLong(" + fieldName + ");" << endl;
+    else if (dataType == DT_UINT64)
+        ofs << "dos.writeLong(" + fieldName + ");" << endl;
+    else if (dataType == DT_DOUBLE)
+        ofs << "dos.writeDouble(" + fieldName + ");" << endl;
+    else if (dataType == DT_FLOAT)
+        ofs << "dos.writeFloat(" + fieldName + ");" << endl;
+    else if (dataType == DT_INT32)
+        ofs << "dos.writeInt(" + fieldName + ");" << endl;
+    else if (dataType == DT_UINT32)
+        ofs << "dos.writeInt(" + fieldName + ");" << endl;
+    else if (dataType == DT_INT16)
+        ofs << "dos.writeShort(" + fieldName + ");" << endl;
+    else if (dataType == DT_UINT16)
+        ofs << "dos.writeShort(" + fieldName + ");" << endl;
+    else if (dataType == DT_INT8)
+        ofs << "dos.writeByte(" + fieldName + ");" << endl;
+    else if (dataType == DT_BOOL)
+        ofs << "dos.writeBoolean(" + fieldName + ");" << endl;
+    else if (dataType == DT_STRING)
+        ofs << "dos.writeUTF(" + fieldName + ");" << endl;
+
+}
+
+void JavaCodeGenerator::readField(ofstream & ofs, DataType dataType, string fieldName) {
+    if (dataType == DT_INT64)
+        ofs << fieldName + " = dis.readLong();" << endl;
+    else if (dataType == DT_UINT64)
+        ofs << fieldName + " = dis.readLong();" << endl;
+    else if (dataType == DT_DOUBLE)
+        ofs << fieldName + " = dis.readDouble();" << endl;
+    else if (dataType == DT_FLOAT)
+        ofs << fieldName + " = dis.readFloat();" << endl;
+    else if (dataType == DT_INT32)
+        ofs << fieldName + " = dis.readInt();" << endl;
+    else if (dataType == DT_UINT32)
+        ofs << fieldName + " = dis.readInt();" << endl;
+    else if (dataType == DT_INT16)
+        ofs << fieldName + " = dis.readShort();" << endl;
+    else if (dataType == DT_UINT16)
+        ofs << fieldName + " = dis.readShort();" << endl;
+    else if (dataType == DT_INT8)
+        ofs << fieldName + " = dis.readByte();" << endl;
+    else if (dataType == DT_BOOL)
+        ofs << fieldName + " = dis.readBoolean();" << endl;
+    else if (dataType == DT_STRING)
+        ofs << fieldName + " = dis.readUTF();" << endl;
+
+}
+
 void JavaCodeGenerator::serializeField(ofstream& ofs, TypeDeclaration& theField) {
     if (theField.declarationType == DLT_ARRAY) {
         ofs << "SerializationUtil.writeVariableLength(dos, " + theField.name + ".length);" << endl;
         if (theField.userTypeDefinition == NULL) {
 
             ofs << "for(int i=0; i < " + theField.name + ".length;i++){" << endl;
-            if (theField.dataType == DT_INT64)
-                ofs << "dos.writeLong(" + theField.name + "[i]);" << endl;
-            else if (theField.dataType == DT_UINT64)
-                ofs << "dos.writeLong(" + theField.name + "[i]);" << endl;
-            else if (theField.dataType == DT_DOUBLE)
-                ofs << "dos.writeDouble(" + theField.name + "[i]);" << endl;
-            else if (theField.dataType == DT_FLOAT)
-                ofs << "dos.writeFloat(" + theField.name + "[i]);" << endl;
-            else if (theField.dataType == DT_INT32)
-                ofs << "dos.writeInt(" + theField.name + "[i]);" << endl;
-            else if (theField.dataType == DT_UINT32)
-                ofs << "dos.writeInt(" + theField.name + "[i]);" << endl;
-            else if (theField.dataType == DT_INT16)
-                ofs << "dos.writeShort(" + theField.name + "[i]);" << endl;
-            else if (theField.dataType == DT_UINT16)
-                ofs << "dos.writeShort(" + theField.name + "[i]);" << endl;
-            else if (theField.dataType == DT_INT8)
-                ofs << "dos.writeByte(" + theField.name + "[i]);" << endl;
-            else if (theField.dataType == DT_BOOL)
-                ofs << "dos.writeBoolean(" + theField.name + "[i]);" << endl;
-            else if (theField.dataType == DT_STRING)
-                ofs << "dos.writeUTF(" + theField.name + "[i]);" << endl;
+
+            writeField(ofs, theField.dataType, theField.name + "[i]");
 
             ofs << "}" << endl;
         } else {
@@ -92,28 +124,7 @@ void JavaCodeGenerator::serializeField(ofstream& ofs, TypeDeclaration& theField)
     } else if (theField.declarationType == DLT_USER) {
         ofs << theField.name + ".serialize(dos);" << endl;
     } else if (theField.declarationType == DLT_PRIMITIVE) {
-        if (theField.dataType == DT_INT64)
-            ofs << "dos.writeLong(" + theField.name + ");" << endl;
-        else if (theField.dataType == DT_UINT64)
-            ofs << "dos.writeLong(" + theField.name + ");" << endl;
-        else if (theField.dataType == DT_DOUBLE)
-            ofs << "dos.writeDouble(" + theField.name + ");" << endl;
-        else if (theField.dataType == DT_FLOAT)
-            ofs << "dos.writeFloat(" + theField.name + ");" << endl;
-        else if (theField.dataType == DT_INT32)
-            ofs << "dos.writeInt(" + theField.name + ");" << endl;
-        else if (theField.dataType == DT_UINT32)
-            ofs << "dos.writeInt(" + theField.name + ");" << endl;
-        else if (theField.dataType == DT_INT16)
-            ofs << "dos.writeShort(" + theField.name + ");" << endl;
-        else if (theField.dataType == DT_UINT16)
-            ofs << "dos.writeShort(" + theField.name + ");" << endl;
-        else if (theField.dataType == DT_INT8)
-            ofs << "dos.writeByte(" + theField.name + ");" << endl;
-        else if (theField.dataType == DT_BOOL)
-            ofs << "dos.writeBoolean(" + theField.name + ");" << endl;
-        else if (theField.dataType == DT_STRING)
-            ofs << "dos.writeUTF(" + theField.name + ");" << endl;
+        writeField(ofs, theField.dataType, theField.name);
     } else if (theField.declarationType == DLT_BYTE_ARRAY) {
         ofs << "SerializationUtil.writeVariableLength(dos, " + theField.name + ".length);" << endl;
         ofs << "dos.write(" + theField.name + ");" << endl;
@@ -128,28 +139,8 @@ void JavaCodeGenerator::deserializeField(ofstream& ofs, TypeDeclaration& theFiel
         if (theField.userTypeDefinition == NULL) {
             ofs << theField.name + " = new " + getPrimitiveTypeName(theField.dataType) + "[" + arrayLength + "];" << endl;
             ofs << "for(int i=0; i < " + arrayLength + ";i++){" << endl;
-            if (theField.dataType == DT_INT64)
-                ofs << theField.name + "[i] = dis.readLong();" << endl;
-            else if (theField.dataType == DT_UINT64)
-                ofs << theField.name + "[i] = dis.readLong();" << endl;
-            else if (theField.dataType == DT_DOUBLE)
-                ofs << theField.name + "[i] = dis.readDouble();" << endl;
-            else if (theField.dataType == DT_FLOAT)
-                ofs << theField.name + "[i] = dis.readFloat();" << endl;
-            else if (theField.dataType == DT_INT32)
-                ofs << theField.name + "[i] = dis.readInt();" << endl;
-            else if (theField.dataType == DT_UINT32)
-                ofs << theField.name + "[i] = dis.readInt();" << endl;
-            else if (theField.dataType == DT_INT16)
-                ofs << theField.name + "[i] = dis.readShort();" << endl;
-            else if (theField.dataType == DT_UINT16)
-                ofs << theField.name + "[i] = dis.readShort();" << endl;
-            else if (theField.dataType == DT_INT8)
-                ofs << theField.name + "[i] = dis.readByte();" << endl;
-            else if (theField.dataType == DT_BOOL)
-                ofs << theField.name + "[i] = dis.readBoolean();" << endl;
-            else if (theField.dataType == DT_STRING)
-                ofs << theField.name + "[i] = dis.readUTF();" << endl;
+
+            readField(ofs, theField.dataType, theField.name + "[i]");
 
             ofs << "}" << endl;
         } else {
@@ -164,28 +155,9 @@ void JavaCodeGenerator::deserializeField(ofstream& ofs, TypeDeclaration& theFiel
         ofs << theField.name + " = new " << theField.userTypeDefinition->name << "();" << endl;
         ofs << theField.name + ".deserialize(dis);" << endl;
     } else if (theField.declarationType == DLT_PRIMITIVE) {
-        if (theField.dataType == DT_INT64)
-            ofs << theField.name + " = dis.readLong();" << endl;
-        else if (theField.dataType == DT_UINT64)
-            ofs << theField.name + " = dis.readLong();" << endl;
-        else if (theField.dataType == DT_DOUBLE)
-            ofs << theField.name + " = dis.readDouble();" << endl;
-        else if (theField.dataType == DT_FLOAT)
-            ofs << theField.name + " = dis.readFloat();" << endl;
-        else if (theField.dataType == DT_INT32)
-            ofs << theField.name + " = dis.readInt();" << endl;
-        else if (theField.dataType == DT_UINT32)
-            ofs << theField.name + " = dis.readInt();" << endl;
-        else if (theField.dataType == DT_INT16)
-            ofs << theField.name + " = dis.readShort();" << endl;
-        else if (theField.dataType == DT_UINT16)
-            ofs << theField.name + " = dis.readShort();" << endl;
-        else if (theField.dataType == DT_INT8)
-            ofs << theField.name + " = dis.readByte();" << endl;
-        else if (theField.dataType == DT_BOOL)
-            ofs << theField.name + " = dis.readBoolean();" << endl;
-        else if (theField.dataType == DT_STRING)
-            ofs << theField.name + " = dis.readUTF();" << endl;
+        
+
+        readField(ofs, theField.dataType, theField.name);
     } else if (theField.declarationType == DLT_BYTE_ARRAY) {
         string arrayLength = nextParamName();
         ofs << "int " + arrayLength + " = SerializationUtil.readVariableLength(dis);" << endl;
@@ -218,6 +190,95 @@ string JavaCodeGenerator::getParamNameListString(Function* function) {
     }
 
     return ss.str();
+}
+
+void JavaCodeGenerator::generateImports(ofstream& ofs) {
+    ofs << "import java.io.*;" << endl;
+    ofs << "import info.chenliang.talky.*;" << endl;
+}
+void JavaCodeGenerator::generateDispatcher(string file, TalkyUnit* unit, Interface& theInterface) {
+// 3. dispatcher
+    ofstream ofs(file);
+    if (unit->currentPackage != "") {
+        ofs << "package " << unit->currentPackage << ";" << endl;
+    }
+
+    generateImports(ofs);
+
+    ofs << "public class " + theInterface.name + "Dispatcher {" << endl;
+    // 1. dispatcher method
+    ofs << "public static void dispatch(DataInputStream dis, " + theInterface.name + "Proxy proxy) throws Exception{" << endl;
+    ofs << "int fid = (int)(dis.read()&0xFFFF);" << endl;
+    ofs << "switch(fid)" << endl;
+    ofs << "{" << endl;
+    for (int i = 0; i < theInterface.functions.size(); i++) {
+        ofs << "case " + __ITOA(i) + ":" << endl;
+        ofs << "{" << endl;
+        ofs << theInterface.functions[i]->name << "(dis, proxy);" << endl;
+        ofs << "}" << endl;
+        ofs << "break;" << endl;
+    }
+    ofs << "}" << endl; // switch
+    ofs << "}" << endl; // dispatch method
+    // 2. deserialize param and call proxy
+    for (int i = 0; i < theInterface.functions.size(); i++) {
+        ofs << "protected static void " + theInterface.functions[i]->name + "(DataInputStream dis, " + theInterface.name + "Proxy proxy) throws Exception{" << endl;
+        for (int j = 0; j < theInterface.functions[i]->params.size(); j++) {
+            string typeName = getTypeName(*theInterface.functions[i]->params[j]);
+            ofs << typeName << " " << theInterface.functions[i]->params[j]->name << ";" << endl;
+        }
+        for (int j = 0; j < theInterface.functions[i]->params.size(); j++) {
+            deserializeField(ofs, *theInterface.functions[i]->params[j]);
+        }
+
+        //make the call
+        ofs << "proxy." << theInterface.functions[i]->name << "(" + getParamNameListString(theInterface.functions[i]) + ");" << endl;
+
+        ofs << "}" << endl;
+    }
+    ofs << "}" << endl;
+    ofs.close();
+}
+void JavaCodeGenerator::generateProxy(string file, TalkyUnit* unit, Interface& theInterface) {
+    ofstream ofs(file);
+    if (unit->currentPackage != "") {
+        ofs << "package " << unit->currentPackage << ";" << endl;
+    }
+
+    generateImports(ofs);
+
+    ofs << "public abstract class " + theInterface.name + "Proxy {" << endl;
+    for (int i = 0; i < theInterface.functions.size(); i++) {
+        ofs << "public abstract void " + theInterface.functions[i]->name + "(" + getParamListString(theInterface.functions[i]) + ");" << endl;
+    }
+    ofs << "}" << endl;
+    ofs.close();
+}
+void JavaCodeGenerator::generateStub(string file, TalkyUnit* unit, Interface& theInterface) {
+    ofstream ofs(file);
+    if (unit->currentPackage != "") {
+        ofs << "package " << unit->currentPackage << ";" << endl;
+    }
+
+    generateImports(ofs);
+
+    ofs << "public abstract class " + theInterface.name + "Stub {" << endl;
+    ofs << "protected abstract DataOutputStream begin();" << endl;
+    ofs << "protected abstract void end();" << endl;
+
+    for (int i = 0; i < theInterface.functions.size(); i++) {
+        ofs << "public void " + theInterface.functions[i]->name + "(" + getParamListString(theInterface.functions[i]) + ") throws Exception{" << endl;
+        ofs << "DataOutputStream dos = begin();" << endl;
+        ofs << "dos.write(" << i << ");" << endl;
+        for (int j = 0; j < theInterface.functions[i]->params.size(); j++) {
+            serializeField(ofs, *(theInterface.functions[i]->params[j]));
+        }
+
+        ofs << "end();" << endl;
+        ofs << "}" << endl;
+    }
+    ofs << "}" << endl;
+    ofs.close();
 }
 
 void JavaCodeGenerator::generate(TalkyUnit* unit, string path) {
@@ -289,8 +350,9 @@ void JavaCodeGenerator::generate(TalkyUnit* unit, string path) {
             if (unit->currentPackage != "") {
                 ofs << "package " << unit->currentPackage << ";" << endl;
             }
-            ofs << "import java.io.*;" << endl;
-            ofs << "import info.chenliang.talky.*;" << endl;
+
+            generateImports(ofs);
+
             ofs << "public class " << name << "{" << endl;
 
             Structure& theStructure = *dynamic_cast<Structure*>(definition);
@@ -362,86 +424,12 @@ void JavaCodeGenerator::generate(TalkyUnit* unit, string path) {
             ofs.close();
         } else if (type == DFT_INTERFACE) {
             Interface& theInterface = *dynamic_cast<Interface*>(definition);
-            // 1. proxy class
-            ofstream ofs(path + "/" + name + "Proxy" + ".java");
-            if (unit->currentPackage != "") {
-                ofs << "package " << unit->currentPackage << ";" << endl;
-            }
-            ofs << "import java.io.*;" << endl;
-            ofs << "import info.chenliang.talky.*;" << endl;
-            ofs << "public abstract class " + name + "Proxy {" << endl;
-            for (int i = 0; i < theInterface.functions.size(); i++) {
-                ofs << "public abstract void " + theInterface.functions[i]->name + "(" + getParamListString(theInterface.functions[i]) + ");" << endl;
-            }
-            ofs << "}" << endl;
-            ofs.close();
 
+            generateProxy(path + "/" + name + "Proxy" + ".java", unit, theInterface);
 
-            // 2. stub
-            ofs.open(path + "/" + name + "Stub" + ".java");
-            if (unit->currentPackage != "") {
-                ofs << "package " << unit->currentPackage << ";" << endl;
-            }
-            ofs << "import java.io.*;" << endl;
-            ofs << "import info.chenliang.talky.*;" << endl;
-            ofs << "public abstract class " + name + "Stub {" << endl;
-            ofs << "protected abstract DataOutputStream begin();" << endl;
-            ofs << "protected abstract void end();" << endl;
+            generateStub(path + "/" + name + "Stub" + ".java", unit, theInterface);
 
-            for (int i = 0; i < theInterface.functions.size(); i++) {
-                ofs << "public void " + theInterface.functions[i]->name + "(" + getParamListString(theInterface.functions[i]) + ") throws Exception{" << endl;
-                ofs << "DataOutputStream dos = begin();" << endl;
-                ofs << "dos.write(" << i << ");" << endl;
-                for (int j = 0; j < theInterface.functions[i]->params.size(); j++) {
-                    serializeField(ofs, *(theInterface.functions[i]->params[j]));
-                }
-
-                ofs << "end();" << endl;
-                ofs << "}" << endl;
-            }
-            ofs << "}" << endl;
-            ofs.close();
-
-            // 3. dispatcher
-            ofs.open(path + "/" + name + "Dispatcher" + ".java");
-            if (unit->currentPackage != "") {
-                ofs << "package " << unit->currentPackage << ";" << endl;
-            }
-            ofs << "import java.io.*;" << endl;
-            ofs << "import info.chenliang.talky.*;" << endl;
-            ofs << "public class " + name + "Dispatcher {" << endl;
-            // 1. dispatcher method
-            ofs << "public static void dispatch(DataInputStream dis, " + name + "Proxy proxy) throws Exception{" << endl;
-            ofs << "int fid = (int)(dis.read()&0xFFFF);" << endl;
-            ofs << "switch(fid)" << endl;
-            ofs << "{" << endl;
-            for (int i = 0; i < theInterface.functions.size(); i++) {
-                ofs << "case " + __ITOA(i) + ":" << endl;
-                ofs << "{" << endl;
-                ofs << theInterface.functions[i]->name << "(dis, proxy);" << endl;
-                ofs << "}" << endl;
-                ofs << "break;" << endl;
-            }
-            ofs << "}" << endl; // switch
-            ofs << "}" << endl; // dispatch method
-            // 2. deserialize param and call proxy
-            for (int i = 0; i < theInterface.functions.size(); i++) {
-                ofs << "protected static void " + theInterface.functions[i]->name + "(DataInputStream dis, " + name + "Proxy proxy) throws Exception{" << endl;
-                for (int j = 0; j < theInterface.functions[i]->params.size(); j++) {
-                    string typeName = getTypeName(*theInterface.functions[i]->params[j]);
-                    ofs << typeName << " " << theInterface.functions[i]->params[j]->name << ";" << endl;
-                }
-                for (int j = 0; j < theInterface.functions[i]->params.size(); j++) {
-                    deserializeField(ofs, *theInterface.functions[i]->params[j]);
-                }
-
-                //make the call
-                ofs << "proxy." << theInterface.functions[i]->name << "(" + getParamNameListString(theInterface.functions[i]) + ");" << endl;
-
-                ofs << "}" << endl;
-            }
-            ofs << "}" << endl;
-            ofs.close();
+            generateDispatcher(path + "/" + name + "Dispatcher" + ".java", unit, theInterface);
 
         }
 

@@ -40,6 +40,14 @@ public:
     string getParamNameListString(Function* function);
 
     void generate(TalkyUnit* unit, string path);
+private:
+    void generateImports(ofstream& ofs);
+    void generateDispatcher(string file, TalkyUnit* unit, Interface& theInterface);
+    void generateProxy(string file, TalkyUnit* unit, Interface& theInterface);
+    void generateStub(string file, TalkyUnit* unit, Interface& theInterface);
+
+    void readField(ofstream & ofs, DataType dataType, string fieldName);
+    void writeField(ofstream & ofs, DataType dataType, string fieldName);
 };
 
 
