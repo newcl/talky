@@ -24,6 +24,7 @@
 #include "talky_unit.h"
 #include "talky_parser.h"
 #include "java_code_generator.h"
+#include "c_sharp_code_generator.h"
 #include "assert.h"
 
 using namespace std;

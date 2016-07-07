@@ -10,11 +10,13 @@ TalkyParser& TalkyParser::getInstance()
 
 typedef map<DataType, string> DataType2StringMap;
 typedef map<string, DataType> String2DataTypeMap;
+typedef map<string, CodeGenerator*> LangToCodeGeneratorMap;
 
-DataType2StringMap dataType2String;
-String2DataTypeMap string2DataType;
+static DataType2StringMap dataType2String;
+static String2DataTypeMap string2DataType;
+static LangToCodeGeneratorMap lang2CodeGenerators;
 
-void init(){
+static void init() {
 	string2DataType["int64"] = DT_INT64;
 	string2DataType["uint64"] = DT_UINT64;
 	string2DataType["double"] = DT_DOUBLE;
@@ -27,69 +29,101 @@ void init(){
 	string2DataType["uint8"] = DT_UINT8;
 	string2DataType["bool"] = DT_BOOL;
 	string2DataType["string"] = DT_STRING;
+
+	lang2CodeGenerators["java"] = new JavaCodeGenerator();
+	lang2CodeGenerators["csharp"] = new CSharpCodeGenerator();
 }
 
-DataType stringToDataType(string name){
-	if(string2DataType.count(name)){
+DataType stringToDataType(string name) {
+	if (string2DataType.count(name)) {
 		return string2DataType[name];
 	}
 
 	return DT_UNKNOWN;
 }
 
-int main(int argc, char** argv){
+int main(int argc, char** argv) {
 	init();
-
+	std::vector<string> langs;
 	po::options_description desc("Valid Options:");
 	desc.add_options()
-		("help", "help info")
-		("file", po::value<std::string>(), "specify talky definition file")
-		("output", po::value<std::string>(), "specify output directory")
-		("lang", po::value<std::string>(), "specify output language");
+	("help", "help info")
+	("file", po::value<std::string>(), "specify talky definition file")
+	("output", po::value<std::string>(), "specify output directory")
+	("lang", po::value<vector<string>>(&langs), "specify output language");
 
 	po::variables_map vm;
-	po::store(po::parse_command_line(argc, argv, desc), vm);
+	const po::positional_options_description p; 
+
+	//po::store(po::parse_command_line(argc, argv, desc), vm);
+	po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
 	po::notify(vm);
 
-	if(vm.count("help")){
+	if (vm.count("help")) {
 		cout << desc << endl;
 		return 0;
 	}
 
 	string talkyFile;
-	if(vm.count("file")){
+	if (vm.count("file")) {
 		talkyFile = vm["file"].as<std::string>();
 		cout << "talky:" << talkyFile << endl;
-	}else{
+	} else {
 		cout << "need to specify talky definition file" << endl;
 		return 1;
 	}
 	string outputPath;
-	if(vm.count("output")){
+	if (vm.count("output")) {
 		outputPath = vm["output"].as<std::string>();
 		cout << "outputPath:" << outputPath << endl;
-	}else{
+	} else {
 		cout << "need to specify outputPath" << endl;
 		return 1;
 	}
 
+	if (!langs.empty()) {
+		bool unsupportedLangFound = false;
+		for (auto iterator = langs.begin(); iterator != langs.end(); iterator++) {
+			if (!lang2CodeGenerators.count(*iterator)) {
+				unsupportedLangFound = true;
+				cout << "language not supported:" << *iterator << endl;
+			}
+			// iterator->first = key
+			// iterator->second = value
+			// Repeat if you also want to iterate through the second map.
+		}
+
+		if (unsupportedLangFound)
+		{
+			cout << "currently supported languages:" << endl;
+			for (auto iterator = lang2CodeGenerators.begin(); iterator != lang2CodeGenerators.end(); iterator++) {
+				cout <<  iterator->first << endl;
+
+			}
+			return 1;
+		}
+	} else {
+		cout << "need to specify output language" << endl;
+		return 1;
+	}
+
 	fs::path dir(outputPath);
-	if(fs::is_regular_file(dir)){
+	if (fs::is_regular_file(dir)) {
 		cout << "output path is a file:" << outputPath << endl;
 		return 1;
 	}
 	// not exist create
-	if(!fs::exists(dir)){
-		if(boost::filesystem::create_directories(dir)) {
+	if (!fs::exists(dir)) {
+		if (boost::filesystem::create_directories(dir)) {
 			//std::cout << "Success" << "\n";
-		}else{
+		} else {
 
 		}
 	}
-	
+
 
 	// should exist and is a directory
-	if(!fs::exists(dir) || !fs::is_directory(dir)){
+	if (!fs::exists(dir) || !fs::is_directory(dir)) {
 		cout << "output path invalid:" << outputPath << endl;
 		return 1;
 	}
@@ -102,12 +136,12 @@ int main(int argc, char** argv){
 
 	TalkyParser::getInstance().parse(talkyFile);
 	// TODO move to Parser::parse
-	do{
+	do {
 		TalkyUnit* talkyUnit = TalkyParser::getInstance().takeTalkyUnit();
 		yyin = talkyUnit->file;
-		do{
+		do {
 			int code = yyparse();
-			if(code == 0){
+			if (code == 0) {
 				/*
 				this can mean 2 things
 				1. move on to the next talky file by import
@@ -115,25 +149,30 @@ int main(int argc, char** argv){
 				 */
 				break;
 			}
-		}while(!feof(yyin));	
+		} while (!feof(yyin));
 
 		TalkyParser::getInstance().onTalkyUnitParsed(talkyUnit);
-	}while(TalkyParser::getInstance().hasMoreTalkyUnits());
+	} while (TalkyParser::getInstance().hasMoreTalkyUnits());
 
 	dir = fs::complete(dir);
 	string absolutePath = dir.native();
-	CodeGenerator* cg = new JavaCodeGenerator();
 
-	for(int i=0; i < TalkyParser::getInstance().parsedTalkyUnits.size();i++){
+
+	for (int i = 0; i < TalkyParser::getInstance().parsedTalkyUnits.size(); i++) {
 		TalkyUnit* unit = TalkyParser::getInstance().parsedTalkyUnits[i];
-		cg->generate(unit, absolutePath);
+
+		for (auto iterator = langs.begin(); iterator != langs.end(); iterator++) {
+			CodeGenerator* cg = lang2CodeGenerators[*iterator];
+			cg->generate(unit, absolutePath);
+		}
+
 	}
 
 	// all the parsing is done, write language bindings
-	
-	
+
+
 }
 
-void yyerror(const char* s){
+void yyerror(const char* s) {
 	cout << "parse error " << std::string(s) << endl;
 }
